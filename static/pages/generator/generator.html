@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <title>选择音乐</title>
+  <title>图片生成</title>
   <meta name="keywords" content="css3, html5, js, background video, fullscreen video">
-  <link rel="stylesheet" href="list.css" type="text/css">
+  <link rel="stylesheet" href="generator.css" type="text/css">
   <script>
     try {
       Typekit.load({
@@ -26,32 +26,26 @@
     <div id="video_cover"></div>
     <div id="overlay"></div>
 
-    <div id="top">
-      <form class="filter-form">
-        <input id="inputsearch" name="" placeholder="Input Music Name" type="text">
-      </form>
-      <img id="search" src="../../packages/搜索.png" alt="搜索" height=30%>
-    </div>
-    <div id="title">
-      <div class="titleName">
-        <p1>歌曲名</p1>
-      </div>
-      <div class="titleSinger">
-        <p>歌手</p>
-      </div>
-      <div class="titleAlbum">
-        <p>专辑</p>
-      </div>
-      <div class="titleTime">
-        <p>时长</p>
-      </div>
-    </div>
-
     <div id="main">
-      <div id="list">
-        <!-- 该部分由js代码填充 -->
+      <div id="left">
+        <div id="showPic"></div>
+        <div id="selectFilter"></div>
+      </div>
+      <div id="right">
+        <div class="tab tab-card">
+          <!-- 标签 -->
+          <ul class="tab-title">
+            <li class="active tabA">人像图</li>
+            <li class="tabB">背景素材</li>
+          </ul>
+        </div>
+        <div id="recommand">
+          <div class="contentA">contentA</div>
+          <div class="contentB">contentB</div>
+        </div>
       </div>
     </div>
+  </div>
   </div>
 
   <script src="../bideo.js"></script>
@@ -123,6 +117,22 @@
     let v = decodeURIComponent(o.songName)
     Sea('#inputsearch').val(v)
     Sea('#search').click()
+  </script>
+
+  <script type="text/javascript">
+    Sea('.contentA,.contentB').hide()
+    Sea('.contentA').show()
+    Sea('.tab-title').on('click', 'li', function (event) {
+      Sea('.tab-title li').removeClass('active')
+      Sea(event.target).addClass('active')
+      Sea('.contentA,.contentB').hide()
+      if (Sea(event.target).hasClass('tabA')) {
+        console.log('🐸contentA应该显示了')
+        Sea('.contentA').show()
+      } else {
+        Sea('.contentB').show()
+      }
+    })
   </script>
 </body>
 

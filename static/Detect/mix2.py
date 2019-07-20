@@ -8,15 +8,25 @@ def mix_picture(background,figure):
 
     height_1,width_1 = img1.shape[:2]
     height_2,width_2 = img2.shape[:2]
+    print("background:",height_1,width_1)
+    print("figure:", height_2, width_2)
+
+    if height_2>height_1:
+        img2 = cv2.resize(img2, (int(((height_1-100) / height_2) * width_2),(height_1-100)), interpolation=cv2.INTER_CUBIC)
+    if width_2 > width_1:
+        img2 = cv2.resize(img2, ((width_1-100),int(((width_1-100)/width_2)*height_2)), interpolation=cv2.INTER_CUBIC)
+
+    height_3, width_3 = img2.shape[:2]
+    print("new_figure:", height_3, width_3)
 
     # 设置roi
     # rows, cols = img2.shape[:2]
     # roi = img1[:rows, :cols]
 
     # 设置roi
-    r1 = height_1 - height_2-70
+    r1 = height_1 - height_3-70
     r2 = height_1-70
-    c1 = width_1 - width_2 -300
+    c1 = width_1 - width_3 -300
     c2 = width_1 -300
     roi = img1[r1:r2, c1:c2]
 
@@ -33,11 +43,11 @@ def mix_picture(background,figure):
     img1[r1:r2, c1:c2] = dst  # 融合后放在原图上
 
     #保存融合后的图片
-    cv2.imwrite("../image/result_mix3.jpg", img1)
+    cv2.imwrite("./static/image/result_mix3.jpg", img1)
 
 
 #背景图片
-background='../image/secen.jpg'
+background='./static/image/secen.jpg'
 #人像图片
-figure='../image/taylor2_res.jpg'
+figure='./static/image/taylor2_res.jpg'
 mix_picture(background,figure)

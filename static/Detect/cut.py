@@ -37,5 +37,5 @@ def cut_pircture(src):
     print('Done.')
 
 
-src='../image/hzy2.jpg'
+src='./static/image/taylor2.jpg'
 cut_pircture(src)

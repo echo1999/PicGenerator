@@ -28,20 +28,65 @@
 
     <div id="main">
       <div id="left">
-        <div id="showPic"></div>
-        <div id="selectFilter"></div>
+        <div id="showPic">
+          <img id="showFigure" src="../../image/figure/figure1.jpg">
+          <!-- <img id="resultPic" src="../../image/background/background2.jpg"> -->
+        </div>
+        <div id="btns">
+          <div class="left_btn" id="btn_start">融合</div>
+          <div class="left_btn" id="btn_save">保存</div>
+          <div class="left_btn" id="btn_restart">清空</div>
+        </div>
+
+        <div id="selectFilter">
+          <img class="filterPic" src="../../image/filter/边缘提取.jpg">
+          <img class="filterPic" src="../../image/filter/边缘增强.jpg">
+          <img class="filterPic" src="../../image/filter/浮雕.jpg">
+          <img class="filterPic" src="../../image/filter/轮廓.jpg">
+          <img class="filterPic" src="../../image/filter/模糊.jpg">
+          <img class="filterPic" src="../../image/filter/平滑.jpg">
+          <img class="filterPic" src="../../image/filter/细节.jpg">
+          <img class="filterPic" src="../../image/filter/组合.jpg">
+          <img class="filterPic" src="../../image/filter/锐化.jpg">
+          <img class="filterPic" src="../../image/filter/平滑滤镜_加强版.jpg">
+        </div>
       </div>
       <div id="right">
         <div class="tab tab-card">
           <!-- 标签 -->
           <ul class="tab-title">
-            <li class="active tabA">人像图</li>
-            <li class="tabB">背景素材</li>
+            <li class="active tabA">图像素材</li>
+            <li class="tabB">人像图</li>
           </ul>
         </div>
-        <div id="recommand">
-          <div class="contentA">contentA</div>
-          <div class="contentB">contentB</div>
+        <div id="myContent">
+          <div class="contentB">
+            <div id="selectFigList">
+              <div class="selectFig" style="background-color: rgba(241, 241, 241, 0.9);">
+                <img class="selectAdd" src="../../image/add.png">
+              </div>
+              <!-- <img class="selectFig" src="../../image/figure/figure1.jpg">
+              <img class="selectFig" src="../../image/figure/figure2.jpg">
+              <img class="selectFig" src="../../image/figure/figure3.jpg">
+              <img class="selectFig" src="../../image/figure/figure4.jpg">
+              <img class="selectFig" src="../../image/figure/figure5.jpg">
+              <img class="selectFig" src="../../image/figure/figure6.jpg">
+              <img class="selectFig" src="../../image/figure/figure7.jpg">
+              <img class="selectFig" src="../../image/figure/figure8.jpg"> -->
+            </div>
+          </div>
+          <div class="contentA">
+            <div id="selectBgList">
+              <!-- <img class="selectBG" src="../../image/background/background1.jpg">
+              <img class="selectBG" src="../../image/background/background2.jpg">
+              <img class="selectBG" src="../../image/background/background2.jpg">
+              <img class="selectBG" src="../../image/background/background1.jpg">
+              <img class="selectBG" src="../../image/background/background1.jpg">
+              <img class="selectBG" src="../../image/background/background2.jpg">
+              <img class="selectBG" src="../../image/background/background2.jpg">
+              <img class="selectBG" src="../../image/background/background1.jpg"> -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -60,63 +105,57 @@
   <script src="../../packages/bigsea.js"></script>
   <script src="../analyse/js/jquery.min.js"></script>
   <script type="text/javascript">
-    Sea('#search').on('click', function () {
-      Sea.Ajax({
-        url: '/list.search',
-        data: {
-          search: Sea('#inputsearch').val()
+    Sea.Ajax({
+      url: '/show.bg',
+      data: {
+      }
+    }).then(res => {
+      if (res) {
+        // console.log('🐸res', res)
+        num = Number(res)
+        // console.log('🐸num', num)
+        let html = ''
+        for (let i = 0; i < res; i++) {
+          html += `<img class="selectBG" src="../../image/background/background${i+1}.jpg" data-key=${i+1}>`
         }
-      }).then(res => {
-        if (res.ok) {
-          let html = ''
-          for (let i = 0; i < res.data.length; i++) {
-            const e = res.data[i]
-            const name = e[1]
-            const singer = e[2]
-            const album = e[3]
-            const min = e[4]
-            const second = e[5]
-            const time = e[4] + ":" + e[5]
-            html += `<div class="item" data-key=${i}>
-            <div class="name"> ${name}</div>
-            <div class="singer">${singer}</div>
-            <div class="album">${album}</div>
-            <div class="time">${time}</div>
-          </div>`
-          }
-          document.querySelector('#list').innerHTML = html
-        }
-      })
-    })
-
-    Sea('#list').on('click', '.item', function (event) {
-
-      let num = event.target.dataset.key
-      let name = Sea('#inputsearch').val()
-      if (num >= 0) {
-        // let o = Sea.query(window.location.search)
-        Sea.Ajax({ //先判断歌曲是否收费
-          url: '/list.isFree',
-          data: {
-            songName: name,
-            songNum: num
-          }
-        }).then(res => {
-          if (res == "isFree") { //如果免费则跳转
-            window.location.href = '/pages/analyse/analyse.html?songName=' + name + '&songNum=' + num
-          } else { //否则提示用户换一首歌
-            alert("歌曲需要收费，无法解析，请换一首歌")
-          }
-        })
+        document.querySelector('#selectBgList').innerHTML = html
       }
     })
-    // 取参数
-    let o = Sea.query(window.location.search)
-    console.log('🐸', o)
-    // 传入 input 因为 url 不能带中文 所以要解析一下
-    let v = decodeURIComponent(o.songName)
-    Sea('#inputsearch').val(v)
-    Sea('#search').click()
+    Sea('#selectBgList').on('click', '.selectBG', function (event){
+    // Sea('.selectBGList').on('click', function () {
+        let num = event.target.dataset.key
+        console.log('key', num)
+        let html=`<img id="resultPic" src="../../image/background/background${num}.jpg">`
+        document.querySelector('#showPic').innerHTML = html
+        // Sea('.contentA').append(html)
+    })
+
+    //显示人像素材
+    Sea.Ajax({
+        url: '/show.fig',
+        data: {
+        }
+      }).then(res => {
+        if (res) {
+          console.log('🐸res', res)
+          num = Number(res)
+          console.log('🐸num', num)
+          let html = ''
+          for (let i = 0; i < res; i++) {
+            html += `<img class="selectFig" src="../../image/figure/figure${i+1}.jpg" data-key=${i+1}>`
+          }
+          Sea('#selectFigList').append(html)
+          // document.querySelector('#selectFigList').innerHTML = html
+        }
+      })
+      Sea('#selectFigList').on('click', '.selectFig', function (event) {
+        // Sea('.selectBGList').on('click', function () {
+        let num = event.target.dataset.key
+        console.log('key', num)
+        let html = `<img id="showFigure" src="../../image/figure/figure${num}.jpg">`
+        // document.querySelector('#showPic').innerHTML = html
+        Sea('#showPic').prepend(html)
+      })
   </script>
 
   <script type="text/javascript">

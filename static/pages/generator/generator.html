@@ -5,7 +5,28 @@
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <title>图片生成</title>
   <meta name="keywords" content="css3, html5, js, background video, fullscreen video">
+  <!-- CSS -->
   <link rel="stylesheet" href="generator.css" type="text/css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+  <link rel="stylesheet" href="./form-1/assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./form-1/assets/css/form-elements.css">
+  <link rel="stylesheet" href="./form-1/assets/css/style.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Favicon and touch icons -->
+  <link rel="shortcut icon" href="./form-1/assets/ico/favicon.png">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144"
+    href="./form-1/assets/ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114"
+    href="./form-1/assets/ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./form-1/assets/ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="./form-1/assets/ico/apple-touch-icon-57-precomposed.png">
   <script>
     try {
       Typekit.load({
@@ -65,7 +86,8 @@
           <div class="contentB">
             <div id="selectFigList">
               <div class="selectFig" style="background-color: rgba(241, 241, 241, 0.9);">
-                <img class="selectAdd" src="../../image/add.png">
+                <img class="selectAdd launch-modal" src="../../../image/add.png" href="#"
+                  data-modal-id="modal-register">
               </div>
               <!-- <img class="selectFig" src="../../image/figure/figure1.jpg">
               <img class="selectFig" src="../../image/figure/figure2.jpg">
@@ -112,7 +134,40 @@
     </div>
   </div>
   </div>
+  <!-- MODAL -->
+  <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register-label"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h3 class="modal-title" id="modal-register-label">上传人像图片</h3>
+          <p>点击浏览选择本地人像图片上传，点击确认后即上传成功</p>
+        </div>
+
+        <div class="modal-body">
+          <form role="form" action="" method="post" class="registration-form">
+            <!-- <div class="showimg">
+              <img id="img" src="images/tx_1.jpg" alt="">
+            </div>
+            <button id="choosePic" type="submit" class="btn">上传图像...</button> -->
+            <div class="showimg">
+            <img id="preview"/>
+            </div>
+            <center>
+            <input type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;"/>
+            </center>
+            <button id="choosePic" type="submit" class="btn">确认</button>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
   <script src="../bideo.js"></script>
   <script src="../main.js"></script>
 
@@ -182,20 +237,23 @@
     Sea('#selectFigList').on('click', '.selectFig', function (event) {
       // Sea('.selectBGList').on('click', function () {
       let FigNum = event.target.dataset.key
-      console.log('key', num)
-      let html = `<img id="showFigure" src="../../image/figure/figure${FigNum}.jpg">`
-      // document.querySelector('#showPic').innerHTML = html
-      Sea('#showPic').prepend(html)
-      Sea.Ajax({
-        url: '/upload.fig',
-        data: {
-          selectNum: FigNum
-        }
-      }).then(res => {
-        if (res == "ok") {
-          console.log('figure上传成功')
-        }
-      })
+      // console.log('key', FigNum)
+      if (FigNum != undefined) {
+        console.log('我不是undefined', FigNum)
+        let html = `<img id="showFigure" src="../../image/figure/figure${FigNum}.jpg">`
+        // document.querySelector('#showPic').innerHTML = html
+        Sea('#showPic').prepend(html)
+        Sea.Ajax({
+          url: '/upload.fig',
+          data: {
+            selectNum: FigNum
+          }
+        }).then(res => {
+          if (res == "ok") {
+            console.log('figure上传成功')
+          }
+        })
+      }
     })
 
     //显示、上传蝴蝶图
@@ -291,6 +349,38 @@
         Sea('.contentC').show()
       }
     })
+  </script>
+  <!-- Javascript -->
+  <script src="./form-1/assets/js/jquery-1.11.1.min.js"></script>
+  <script src="./form-1/assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="./form-1/assets/js/jquery.backstretch.min.js"></script>
+  <script src="./form-1/assets/js/scripts.js"></script>
+  <script>
+    function imgPreview(fileDom) {
+      //判断是否支持FileReader
+      if (window.FileReader) {
+        var reader = new FileReader();
+      } else {
+        alert("您的设备不支持图片预览功能，如需该功能请升级您的设备！");
+      }
+
+      //获取文件
+      var file = fileDom.files[0];
+      var imageType = /^image\//;
+      //是否是图片
+      if (!imageType.test(file.type)) {
+        alert("请选择图片！");
+        return;
+      }
+      //读取完成
+      reader.onload = function (e) {
+        //获取图片dom
+        var img = document.getElementById("preview");
+        //图片路径设置为读取的图片
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
   </script>
 </body>
 

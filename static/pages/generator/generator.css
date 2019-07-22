@@ -188,12 +188,20 @@ input::-webkit-input-placeholder {
 	width: 80%;
 	height: 60%;
 	position: relative;
-	margin-top: 40px;
+	/* margin-top: 40px; */
 	margin-left: 65px;
 	border-radius: 10px;
 	/* display: table-cell; */
-	vertical-align: middle;
+	/* vertical-align: middle; */
 	text-align: center;
+	/* background-color: rgba(255, 255, 255, 0.4); */
+}
+.tips {
+	/* background-color: pink; */
+	font-size: 26px;
+	position: relative;
+	top: 180px;
+	left: 270px;
 }
 #btns {
 	margin-top: 5px;
@@ -205,8 +213,12 @@ input::-webkit-input-placeholder {
 	width: 182px;
 	height: 250px;
 	position: absolute;
-
-	
+}
+#showBf {
+	width: 144px;
+	height: 144px;
+	position: absolute;
+	left: 250px;
 }
 #resultPic {
 	width: 144px;
@@ -282,10 +294,7 @@ input::-webkit-input-placeholder {
 	/* background-color: darkgoldenrod; */
 	overflow: auto;
 }
-/* #selectFigList{
-	overflow: hidden;
-	overflow: auto;
-} */
+
 .selectBG {
 	z-index: 4;
 	width: 218px;
@@ -319,6 +328,21 @@ input::-webkit-input-placeholder {
 	vertical-align: middle;
 	text-align: center;
 }
+.selectBf {
+	z-index: 4;
+	width: 144px;
+	height: 144px;
+	/* background-color: green; */
+	/* position: relative; */
+	cursor: pointer;
+	float: left;
+	border: 1.5px solid rgba(0, 0, 0, 0);
+	/* margin: 0 auto; */
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
 .tab-card {
 	border-width: 1px;
 	/* border-style: solid; */
@@ -374,7 +398,7 @@ ul {
 	position: relative;
 	line-height: 40px;
 	min-width: 65px;
-	padding: 0 80px;
+	padding: 0 42px;
 	text-align: center;
 	cursor: pointer;
 	border-radius: 15px;

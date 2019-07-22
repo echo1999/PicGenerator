@@ -5,7 +5,7 @@ import numpy as np
 from aip import AipBodyAnalysis
 
 
-def cut_pircture(src):
+def cut_picture(src):
 
     # 在百度云中申请，每天各接口有 500 次调用限制.
     APP_ID = '16628525'
@@ -43,5 +43,5 @@ def cut_pircture(src):
     cv2.imwrite(result_path, result)
 
 
-src = './static/image/figure/figure1.jpg'
-cut_pircture(src)
+# src = './static/image/temp/figure.jpg'
+# cut_picture(src)

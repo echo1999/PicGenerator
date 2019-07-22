@@ -28,9 +28,10 @@
 
     <div id="main">
       <div id="left">
+        <div class="tips" style="vertical-align: middle">选择素材</div>
         <div id="showPic">
-          <img id="showFigure" src="../../image/figure/figure1.jpg">
-          <!-- <img id="resultPic" src="../../image/background/background2.jpg"> -->
+          <!-- <img id="showFigure" src="../../image/figure/figure1.jpg">
+          <img id="resultPic" src="../../image/background/background1.jpg"> -->
         </div>
         <div id="btns">
           <div class="left_btn" id="btn_start">融合</div>
@@ -57,6 +58,7 @@
           <ul class="tab-title">
             <li class="active tabA">图像素材</li>
             <li class="tabB">人像图</li>
+            <li class="tabC">蝴蝶图</li>
           </ul>
         </div>
         <div id="myContent">
@@ -87,6 +89,24 @@
               <img class="selectBG" src="../../image/background/background1.jpg"> -->
             </div>
           </div>
+          <div class="contentC">
+            <div id="selectBfList">
+              <!-- <img class="selectBf" src="../../image/white_butterfly/butterfly1.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly2.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly3.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly4.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly5.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly6.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly7.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly8.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly9.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly10.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly11.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly12.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly13.jpg">
+              <img class="selectBf" src="../../image/white_butterfly/butterfly14.jpg"> -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -101,9 +121,10 @@
       window.location.protocol = "https";
     }
   </script>
-  <script src="./list.js"></script>
+  <script src="./generator.js"></script>
   <script src="../../packages/bigsea.js"></script>
-  <script src="../analyse/js/jquery.min.js"></script>
+  <script src="../../packages/jquery.min.js"></script>
+  <!-- 显示、上传背景图 -->
   <script type="text/javascript">
     Sea.Ajax({
       url: '/show.bg',
@@ -115,61 +136,159 @@
         num = Number(res)
         // console.log('🐸num', num)
         let html = ''
-        for (let i = 0; i < res; i++) {
-          html += `<img class="selectBG" src="../../image/background/background${i+1}.jpg" data-key=${i+1}>`
+        for (let i = 0; i < num; i++) {
+          html += `<img class="selectBG" src="../../image/background/background${i + 1}.jpg" data-key=${i + 1}>`
         }
         document.querySelector('#selectBgList').innerHTML = html
       }
     })
-    Sea('#selectBgList').on('click', '.selectBG', function (event){
-    // Sea('.selectBGList').on('click', function () {
-        let num = event.target.dataset.key
-        console.log('key', num)
-        let html=`<img id="resultPic" src="../../image/background/background${num}.jpg">`
-        document.querySelector('#showPic').innerHTML = html
-        // Sea('.contentA').append(html)
+    Sea('#selectBgList').on('click', '.selectBG', function (event) {
+      // Sea('.selectBGList').on('click', function () {
+      let BgNum = event.target.dataset.key
+      // console.log('key', num)
+      let html = `<img id="resultPic" src="../../image/background/background${BgNum}.jpg">`
+      document.querySelector('#showPic').innerHTML = html
+      Sea.Ajax({
+        url: '/upload.bg',
+        data: {
+          selectNum: BgNum
+        }
+      }).then(res => {
+        if (res == "ok") {
+          console.log('background上传成功')
+        }
+      })
+      // Sea('.contentA').append(html)
     })
 
-    //显示人像素材
+    //显示、上传人像素材
     Sea.Ajax({
-        url: '/show.fig',
+      url: '/show.fig',
+      data: {
+      }
+    }).then(res => {
+      if (res) {
+        // console.log('🐸res', res)
+        num = Number(res)
+        // console.log('🐸num', num)
+        let html = ''
+        for (let i = 0; i < res; i++) {
+          html += `<img class="selectFig" src="../../image/figure/figure${i + 1}.jpg" data-key=${i + 1}>`
+        }
+        Sea('#selectFigList').append(html)
+        // document.querySelector('#selectFigList').innerHTML = html
+      }
+    })
+    Sea('#selectFigList').on('click', '.selectFig', function (event) {
+      // Sea('.selectBGList').on('click', function () {
+      let FigNum = event.target.dataset.key
+      console.log('key', num)
+      let html = `<img id="showFigure" src="../../image/figure/figure${FigNum}.jpg">`
+      // document.querySelector('#showPic').innerHTML = html
+      Sea('#showPic').prepend(html)
+      Sea.Ajax({
+        url: '/upload.fig',
+        data: {
+          selectNum: FigNum
+        }
+      }).then(res => {
+        if (res == "ok") {
+          console.log('figure上传成功')
+        }
+      })
+    })
+
+    //显示、上传蝴蝶图
+    Sea.Ajax({
+      url: '/show.bf',
+      data: {
+      }
+    }).then(res => {
+      if (res) {
+        console.log('🐸res', res)
+        num = Number(res)
+        console.log('🐸num', num)
+        let html = ''
+        for (let i = 0; i < res; i++) {
+          html += `<img class="selectBf" src="../../image/white_butterfly/butterfly${i + 1}.jpg" data-key=${i + 1}>`
+        }
+        Sea('#selectBfList').append(html)
+        // document.querySelector('#selectFigList').innerHTML = html
+      }
+    })
+    Sea('#selectBfList').on('click', '.selectBf', function (event) {
+      // Sea('.selectBGList').on('click', function () {
+      let BfNum = event.target.dataset.key
+      console.log('BfNum', BfNum)
+      let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
+      // document.querySelector('#showPic').innerHTML = html
+      Sea('#showPic').prepend(html)
+      Sea.Ajax({
+        url: '/upload.bf',
+        data: {
+          selectNum: BfNum
+        }
+      }).then(res => {
+        if (res == "ok") {
+          // console.log('butterfly上传成功')
+        }
+      })
+    })
+    Sea('#btn_start').on('click', function () {
+      console.log('🐸按下了start')
+      Sea.Ajax({
+        url: '/show.result',
         data: {
         }
       }).then(res => {
-        if (res) {
-          console.log('🐸res', res)
-          num = Number(res)
-          console.log('🐸num', num)
+        if (res == "hasBf") {
+          console.log('图片融合成功')
           let html = ''
-          for (let i = 0; i < res; i++) {
-            html += `<img class="selectFig" src="../../image/figure/figure${i+1}.jpg" data-key=${i+1}>`
-          }
-          Sea('#selectFigList').append(html)
-          // document.querySelector('#selectFigList').innerHTML = html
+          html += `<img id="resultPic" src="../../image/resultPic/mixPic2.jpg" >`
+          document.querySelector('#showPic').innerHTML = html
+        } else {
+          let html = ''
+          html += `<img id="resultPic" src="../../image/resultPic/mixPic1.jpg" >`
+          document.querySelector('#showPic').innerHTML = html
         }
       })
-      Sea('#selectFigList').on('click', '.selectFig', function (event) {
-        // Sea('.selectBGList').on('click', function () {
-        let num = event.target.dataset.key
-        console.log('key', num)
-        let html = `<img id="showFigure" src="../../image/figure/figure${num}.jpg">`
-        // document.querySelector('#showPic').innerHTML = html
-        Sea('#showPic').prepend(html)
+    })
+  </script>
+  <script type="text/javascript">
+    Sea('#btn_restart').on('click', function () {
+      console.log('🐸按下了restart')
+      document.getElementById('showPic').innerHTML = "";
+      Sea.Ajax({
+        url: '/show.reStart',
+        data: {
+        }
+      }).then(res => {
+        if (res == "ok") {
+          console.log('文件夹清空成功')
+        }
       })
+    })
   </script>
 
+
   <script type="text/javascript">
-    Sea('.contentA,.contentB').hide()
+    Sea('.contentA,.contentB,.contentC').hide()
     Sea('.contentA').show()
     Sea('.tab-title').on('click', 'li', function (event) {
       Sea('.tab-title li').removeClass('active')
       Sea(event.target).addClass('active')
-      Sea('.contentA,.contentB').hide()
+      Sea('.contentA,.contentB,.contentC').hide()
       if (Sea(event.target).hasClass('tabA')) {
-        console.log('🐸contentA应该显示了')
+        // console.log('🐸contentA应该显示了')
         Sea('.contentA').show()
-      } else {
+      }
+      if (Sea(event.target).hasClass('tabB')) {
+        // console.log('🐸contentB应该显示了')
         Sea('.contentB').show()
+      }
+      if (Sea(event.target).hasClass('tabC')) {
+        // console.log('🐸contentC应该显示了')
+        Sea('.contentC').show()
       }
     })
   </script>

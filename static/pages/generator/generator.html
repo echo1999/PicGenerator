@@ -61,16 +61,17 @@
         </div>
 
         <div id="selectFilter">
-          <img class="filterPic" src="../../image/filter/边缘提取.jpg">
-          <img class="filterPic" src="../../image/filter/边缘增强.jpg">
-          <img class="filterPic" src="../../image/filter/浮雕.jpg">
-          <img class="filterPic" src="../../image/filter/轮廓.jpg">
-          <img class="filterPic" src="../../image/filter/模糊.jpg">
-          <img class="filterPic" src="../../image/filter/平滑.jpg">
-          <img class="filterPic" src="../../image/filter/细节.jpg">
-          <img class="filterPic" src="../../image/filter/组合.jpg">
-          <img class="filterPic" src="../../image/filter/锐化.jpg">
-          <img class="filterPic" src="../../image/filter/平滑滤镜_加强版.jpg">
+          <img class="filterPic" src="../../image/filter/边缘提取.jpg" data-key="1">
+          <img class="filterPic" src="../../image/filter/边缘增强.jpg" data-key="2">
+          <img class="filterPic" src="../../image/filter/浮雕.jpg" data-key="3">
+          <img class="filterPic" src="../../image/filter/轮廓.jpg" data-key="4">
+          <img class="filterPic" src="../../image/filter/模糊.jpg" data-key="5">
+          <img class="filterPic" src="../../image/filter/平滑.jpg" data-key="6">
+          <img class="filterPic" src="../../image/filter/平滑滤镜_加强版.jpg" data-key="7">
+          <img class="filterPic" src="../../image/filter/锐化.jpg" data-key="8">
+          <img class="filterPic" src="../../image/filter/缇庣櫧.jpg" data-key="9">
+          <img class="filterPic" src="../../image/filter/细节.jpg" data-key="10">
+          <img class="filterPic" src="../../image/filter/组合.jpg" data-key="11">
         </div>
       </div>
       <div id="right">
@@ -155,10 +156,10 @@
             </div>
             <button id="choosePic" type="submit" class="btn">上传图像...</button> -->
             <div class="showimg">
-            <img id="preview"/>
+              <img id="preview" />
             </div>
             <center>
-            <input type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;"/>
+              <input type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;" />
             </center>
             <button id="choosePic" type="submit" class="btn">确认</button>
           </form>
@@ -348,6 +349,26 @@
         // console.log('🐸contentC应该显示了')
         Sea('.contentC').show()
       }
+    })
+  </script>
+  <script>
+    Sea('#selectFilter').on('click', '.filterPic', function (event) {
+      // Sea('.selectBGList').on('click', function () {
+      let filterNum = event.target.dataset.key
+      console.log('BfNum', filterNum)
+      let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
+      // document.querySelector('#showPic').innerHTML = html
+      Sea('#showPic').prepend(html)
+      Sea.Ajax({
+        url: '/upload.bf',
+        data: {
+          selectNum: BfNum
+        }
+      }).then(res => {
+        if (res == "ok") {
+          // console.log('butterfly上传成功')
+        }
+      })
     })
   </script>
   <!-- Javascript -->

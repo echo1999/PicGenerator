@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <title>图片生成</title>
+  <title>开始图片合成</title>
   <meta name="keywords" content="css3, html5, js, background video, fullscreen video">
   <!-- CSS -->
   <link rel="stylesheet" href="generator.css" type="text/css">
@@ -152,17 +152,17 @@
 
         <div class="modal-body">
           <!-- <form role="form" action="" method="post" class="registration-form"> -->
-            <!-- <div class="showimg">
+          <!-- <div class="showimg">
               <img id="img" src="images/tx_1.jpg" alt="">
             </div>
             <button id="choosePic" type="submit" class="btn">上传图像...</button> -->
-            <div class="showimg">
-              <img id="preview" />
-            </div>
-            <center>
-              <input type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;" />
-            </center>
-            <button id="choosePic" class="btn">确认</button>
+          <div class="showimg">
+            <img id="preview" />
+          </div>
+          <center>
+            <input type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;" />
+          </center>
+          <button id="choosePic" class="btn">确认</button>
           <!-- </form> -->
         </div>
 
@@ -293,7 +293,7 @@
         }
       }).then(res => {
         if (res == "ok") {
-                if (BfNum == 14) {
+          if (BfNum == 14) {
             let html = `
           <div id="introduce">
             <div class="bfIntroduce">
@@ -320,11 +320,8 @@
 
     })
     Sea('#selectFilter').on('click', '.filterPic', function (event) {
-      // Sea('.selectBGList').on('click', function () {
       let FilterNum = event.target.dataset.key
       console.log('FilterNum', FilterNum)
-      Sea('#selectFilter .filterPic').removeClass('active')
-      Sea(event.target).addClass('active')
       Sea.Ajax({
         url: '/filter',
         data: {
@@ -336,6 +333,8 @@
         }
         if (res == "ok") {
           // console.log('🐸该显示新图了')
+          Sea('#selectFilter .filterPic').removeClass('active')
+          Sea(event.target).addClass('active')
           let html = `<img id="resultPic" src="../../image/resultPic/filterPic.jpg" >`
           document.querySelector('#showPic').innerHTML = html
         }
@@ -429,7 +428,7 @@
       Sea.Ajax({
         url: '/upload.fig',
         data: {
-          selectNum:"0"
+          selectNum: "0"
         }
       }).then(res => {
         if (res == "ok") {

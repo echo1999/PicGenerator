@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <title>音乐输入</title>
+  <title>图片合成</title>
   <meta name="keywords" content="css3, html5, js, background video, fullscreen video">
   <!-- <meta name="description" content="Super easy to implement HTML5 fullscreen background video library in JavaScript."> -->
   <link rel="stylesheet" href="index.css" type="text/css">
@@ -13,7 +13,7 @@
       Typekit.load({
         async: true
       });
-    } catch (e) {}
+    } catch (e) { }
   </script>
   <style>
     #main_content {
@@ -53,11 +53,8 @@
   <script src="../../packages/bigsea.js"></script>
   <script src="../analyse/js/jquery.min.js"></script>
   <script type="text/javascript">
-    Sea('#search').on('click', function () {
-      let v = Sea('.inputsearch').val()
-      if (v) {
-        window.location.href = '/pages/list/list.html?songName=' + v 
-      }
+    Sea('#links').on('click', function () {
+      window.location.href = '/pages/generator/generator.html'
     })
   </script>
 </body>

@@ -2,6 +2,8 @@ import json
 import os
 import numpy as np
 import shutil
+from PIL import Image, ImageFilter
+import cv2
 from static.Detect.get_number_file import (
     get_number_file
 )
@@ -24,35 +26,39 @@ from static.Detect.mix2_butterfly import(
 from static.Detect.cut import(
     cut_picture
 )
-# from model.MelLearning import(
-#     transFormat,
-#     getMelPic
-# )
-# from model.tuneAnalyse.call_predictor import(
-#     predictor
-# )
-# from model.lyricAnalyse.get_result import(
-#     result
-# )
-# 先要初始化一个 Flask 实例
-# @app.route('/', methods=['GET'])
-# def index():
-#     return render_template("index.html")
+from static.Detect.filter import(
+    beauty_face2
 
+)
+import datetime
 app = Flask(__name__, static_folder='views/statics')
 app = Flask(__name__, static_url_path='')
 
 
 @app.route('/show.bg', methods=['GET'])
 def showBG():
+        # 删除抠人像文件夹
+    cut_path = './static/image/cut'
+    shutil.rmtree(cut_path)  # 能删除该文件夹和文件夹下所有文件
+    os.mkdir(cut_path)
+    # 删除用户选中图片文件夹
+    temp_path = './static/image/temp'
+    shutil.rmtree(temp_path)  # 能删除该文件夹和文件夹下所有文件
+    os.mkdir(temp_path)
+    # 删除融合结果图
+    res_path = './static/image/resultPic'
+    shutil.rmtree(res_path)  # 能删除该文件夹和文件夹下所有文件
+    os.mkdir(res_path)
     path = './static/image/background/'
     number = str(get_number_file(path))
-    # print("number:",number)
+    print("number:", number)
     return number
 
 
 @app.route('/upload.bg', methods=['GET'])
 def uploadBG():
+    if os.path.exists('./static/image/temp/background.jpg'):
+        return "exist"
     selectNum = request.args['selectNum']
     src = './static/image/background/background'+selectNum+'.jpg'
     dst = './static/image/temp/'
@@ -71,7 +77,17 @@ def showFig():
 
 @app.route('/upload.fig', methods=['GET'])
 def uploadFig():
+    if os.path.exists('./static/image/temp/figure.jpg'):
+        return "exist"
     selectNum = request.args['selectNum']
+    print("figrue_upload is none 外", selectNum)
+    if selectNum == "0":
+        print("figrue_upload is none",selectNum)
+        src = './static/image/figure2/figure_upload.jpg'
+        dst = './static/image/temp/'
+        filename = 'figure.jpg'
+        upload_picture(src, dst, filename)
+        return "ok"
     src = './static/image/figure/figure'+selectNum+'.jpg'
     dst = './static/image/temp/'
     filename = 'figure.jpg'
@@ -89,11 +105,101 @@ def showBF():
 
 @app.route('/upload.bf', methods=['GET'])
 def uploadBf():
+    if os.path.exists('./static/image/temp/butterfly.jpg'):
+        return "exist"
     selectNum = request.args['selectNum']
     src = './static/image/black_butterfly/butterfly'+selectNum+'.jpg'
     dst = './static/image/temp/'
     filename = 'butterfly.jpg'
     upload_picture(src, dst, filename)
+    return "ok"
+
+
+@app.route('/upload.temp', methods=['GET'])
+def uploadTemp():
+    path = './static/image/temp/'
+    fileNum = get_number_file(path)
+    if fileNum == 0:
+        return "none"
+    if fileNum == 1:
+        return "bf"
+    if fileNum == 3:
+        return "3"
+    if fileNum == 2:
+        if os.path.exists('./static/image/temp/background.jpg'):
+            return "bg"
+        if os.path.exists('./static/image/temp/figure.jpg'):
+            return "figure"
+
+
+@app.route('/filter', methods=['GET'])
+def filter():
+    if os.path.exists('./static/image/resultPic/filterPic.jpg'):
+        os.remove('./static/image/resultPic/filterPic.jpg')
+    selectNum = request.args['selectNum']
+    # print("filter_selectNum", selectNum)
+    # 边缘提取滤镜
+    if os.path.exists('./static/image/resultPic/mixPic1.jpg'):
+        if os.path.exists('./static/image/resultPic/mixPic2.jpg'):
+            print("进来了")
+            img = Image.open("./static/image/resultPic/mixPic2.jpg")
+            img1 = cv2.imread("./static/image/resultPic/mixPic2.jpg")
+            blur4 = beauty_face2(img1)
+            img = img.convert("RGB")
+        else:
+            img = Image.open("./static/image/resultPic/mixPic1.jpg")
+            img1 = cv2.imread("./static/image/resultPic/mixPic1.jpg")
+            blur4 = beauty_face2(img1)
+            img = img.convert("RGB")
+    else:
+        return "none"
+    print("selectNum_type", type(selectNum))
+    if selectNum == "1":
+        print("进来了1")
+        imgfilted_fe = img.filter(ImageFilter.FIND_EDGES)
+        imgfilted_fe.save("./static/image/resultPic/filterPic.jpg")
+    # 边缘增强滤镜
+    if selectNum == "2":
+        print("进来了2")
+        imgfilted_ee_m = img.filter(ImageFilter.EDGE_ENHANCE_MORE)
+        imgfilted_ee_m.save("./static/image/resultPic/filterPic.jpg")
+    # 浮雕滤镜
+    if selectNum == "3":
+        imgfilted_em = img.filter(ImageFilter.EMBOSS)
+        imgfilted_em.save("./static/image/resultPic/filterPic.jpg")
+    # 轮廓滤镜
+    if selectNum == "4":
+        imgfilted_c = img.filter(ImageFilter.CONTOUR)
+        imgfilted_c.save("./static/image/resultPic/filterPic.jpg")
+    # 模糊滤镜
+    if selectNum == "5":
+        imgfilted_b = img.filter(ImageFilter.BLUR)
+        imgfilted_b.save("./static/image/resultPic/filterPic.jpg")
+    # 平滑滤镜
+    if selectNum == "6":
+        imgfilted_sm = img.filter(ImageFilter.SMOOTH)
+        imgfilted_sm.save("./static/image/resultPic/filterPic.jpg")
+    # 平滑滤镜-加强版
+    if selectNum == "7":
+        imgfilted_sm_m = img.filter(ImageFilter.SMOOTH_MORE)
+        imgfilted_sm_m.save("./static/image/resultPic/filterPic.jpg")
+    # 锐化
+    if selectNum == "8":
+        imgfilted_sh = img.filter(ImageFilter.SHARPEN)
+        imgfilted_sh.save("./static/image/resultPic/filterPic.jpg")
+    # 美白-缇庣櫧
+    if selectNum == "9":
+        blur4 = beauty_face2(img1)
+        cv2.imwrite("./static/image/resultPic/filterPic.jpg", blur4)
+   # 细节
+    if selectNum == "10":
+        imgfilted_d = img.filter(ImageFilter.DETAIL)
+        imgfilted_d.save("./static/image/resultPic/filterPic.jpg")
+    # 组合
+    if selectNum == "11":
+        group_imgfilted = img.filter(ImageFilter.CONTOUR)
+        group_imgfilted = group_imgfilted.filter(ImageFilter.SMOOTH_MORE)
+        group_imgfilted.save("./static/image/resultPic/filterPic.jpg")
     return "ok"
 
 
@@ -138,7 +244,7 @@ def showResult():
     fileNum = get_number_file(path)
     if fileNum == 1:
         return "noBf"
-    else :
+    else:
         return "hasBf"
 
 
@@ -147,7 +253,8 @@ if __name__ == '__main__':
         # debug 模式可以自动加载你对代码的变动, 所以不用重启程序
         # host 参数指定为 '0.0.0.0' 可以让别的机器访问你的代码
     config = dict(
-        debug=False,
+        # SEND_FILE_MAX_AGE_DEFAULT=datetime.timedelta(seconds=1),
+        debug=True,
         host='0.0.0.0',
         port=2000,
     )

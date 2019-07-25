@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>七牛云</title>
+</head>
+
+<body>
+  <input id="file-select" type="file" />
+  <button id="file-upload">点击上传</button>
+
+  <script src="http://me.bigc.cc/bigsea.js"></script>
+  <script src="https://unpkg.com/qiniu-js@2.5.4/dist/qiniu.min.js"></script>
+  <script>
+    Sea.Ajax({
+      url: 'http://api.bigc.cc/v3/uptoken',
+    }).then((res) => {
+      Sea('#file-upload').on('click', function (event) {
+        const file = Sea('#file-select').dom.files[0]
+        if (file) {
+          log(Sea.upload)
+          Sea.upload(file, res.uptoken, function (name, event) {
+            // 
+            log(name, event)
+          })
+        }
+      })
+    })
+  </script>
+</body>
+
+</html>

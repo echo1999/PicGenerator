@@ -29,60 +29,60 @@ def beauty_face2(src):
     return dst
 
 
-img = Image.open("./static/image/figure/taylor2.jpg")
+# img = Image.open("./static/image/figure/taylor2.jpg")
 
-#美颜
-img1 = cv2.imread("./static/image/figure/taylor2.jpg")
-blur4 = beauty_face2(img1)
-cv2.imwrite("./static/image/filter/美白.jpg", blur4)
+# #美颜
+# img1 = cv2.imread("./static/image/figure/taylor2.jpg")
+# blur4 = beauty_face2(img1)
+# cv2.imwrite("./static/image/filter/美白.jpg", blur4)
 
 
-##图像处理##
-#转换为RGB图像
-img = img.convert("RGB")
+# ##图像处理##
+# #转换为RGB图像
+# img = img.convert("RGB")
 
-#经过PIL自带filter处理
-#模糊滤镜
-imgfilted_b = img.filter(ImageFilter.BLUR)
-imgfilted_b.save("./static/image/filter/模糊.jpg")
+# #经过PIL自带filter处理
+# #模糊滤镜
+# imgfilted_b = img.filter(ImageFilter.BLUR)
+# imgfilted_b.save("./static/image/filter/模糊.jpg")
 
-#轮廓滤镜
-imgfilted_c = img.filter(ImageFilter.CONTOUR)
-imgfilted_c.save("./static/image/filter/轮廓.jpg")
+# #轮廓滤镜
+# imgfilted_c = img.filter(ImageFilter.CONTOUR)
+# imgfilted_c.save("./static/image/filter/轮廓.jpg")
 
-#边缘增强滤镜
-imgfilted_ee = img.filter(ImageFilter.EDGE_ENHANCE)
-imgfilted_ee.save("./static/image/filter/边缘增强.jpg")
+# #边缘增强滤镜
+# imgfilted_ee = img.filter(ImageFilter.EDGE_ENHANCE)
+# imgfilted_ee.save("./static/image/filter/边缘增强.jpg")
 
-#边缘增强滤镜---增强版
-imgfilted_ee_m = img.filter(ImageFilter.EDGE_ENHANCE_MORE)
-imgfilted_ee_m.save("./static/image/filter/边缘增强.jpg")
+# #边缘增强滤镜---增强版
+# imgfilted_ee_m = img.filter(ImageFilter.EDGE_ENHANCE_MORE)
+# imgfilted_ee_m.save("./static/image/filter/边缘增强.jpg")
 
-#浮雕滤镜
-imgfilted_em = img.filter(ImageFilter.EMBOSS)
-imgfilted_em.save("./static/image/filter/浮雕.jpg")
+# #浮雕滤镜
+# imgfilted_em = img.filter(ImageFilter.EMBOSS)
+# imgfilted_em.save("./static/image/filter/浮雕.jpg")
 
-#边缘提取滤镜
-imgfilted_fe = img.filter(ImageFilter.FIND_EDGES)
-imgfilted_fe.save("./static/image/filter/边缘提取.jpg")
+# #边缘提取滤镜
+# imgfilted_fe = img.filter(ImageFilter.FIND_EDGES)
+# imgfilted_fe.save("./static/image/filter/边缘提取.jpg")
 
-#平滑滤镜
-imgfilted_sm = img.filter(ImageFilter.SMOOTH)
-imgfilted_sm.save("./static/image/filter/平滑.jpg")
+# #平滑滤镜
+# imgfilted_sm = img.filter(ImageFilter.SMOOTH)
+# imgfilted_sm.save("./static/image/filter/平滑.jpg")
 
-#平滑滤镜——加强版
-imgfilted_sm_m = img.filter(ImageFilter.SMOOTH_MORE)
-imgfilted_sm_m.save("./static/image/filter/平滑滤镜_加强版.jpg")
+# #平滑滤镜——加强版
+# imgfilted_sm_m = img.filter(ImageFilter.SMOOTH_MORE)
+# imgfilted_sm_m.save("./static/image/filter/平滑滤镜_加强版.jpg")
 
-#锐化滤镜
-imgfilted_sh = img.filter(ImageFilter.SHARPEN)
-imgfilted_sh.save("./static/image/filter/锐化.jpg")
+# #锐化滤镜
+# imgfilted_sh = img.filter(ImageFilter.SHARPEN)
+# imgfilted_sh.save("./static/image/filter/锐化.jpg")
 
-#细节滤镜
-imgfilted_d = img.filter(ImageFilter.DETAIL)
-imgfilted_d.save("./static/image/filter/细节.jpg")
+# #细节滤镜
+# imgfilted_d = img.filter(ImageFilter.DETAIL)
+# imgfilted_d.save("./static/image/filter/细节.jpg")
 
-##组合使用filter
-group_imgfilted = img.filter(ImageFilter.CONTOUR)
-group_imgfilted = group_imgfilted.filter(ImageFilter.SMOOTH_MORE)
-group_imgfilted.save("./static/image/filter/组合.jpg")
+# ##组合使用filter
+# group_imgfilted = img.filter(ImageFilter.CONTOUR)
+# group_imgfilted = group_imgfilted.filter(ImageFilter.SMOOTH_MORE)
+# group_imgfilted.save("./static/image/filter/组合.jpg")

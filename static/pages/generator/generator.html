@@ -50,13 +50,14 @@
     <div id="main">
       <div id="left">
         <div class="tips" style="vertical-align: middle">选择素材</div>
+
         <div id="showPic">
           <!-- <img id="showFigure" src="../../image/figure/figure1.jpg">
           <img id="resultPic" src="../../image/background/background1.jpg"> -->
         </div>
         <div id="btns">
           <div class="left_btn" id="btn_start">融合</div>
-          <div class="left_btn" id="btn_save">保存</div>
+          <div class="left_btn" id="btn_add">添加</div>
           <div class="left_btn" id="btn_restart">清空</div>
         </div>
 
@@ -150,7 +151,7 @@
         </div>
 
         <div class="modal-body">
-          <form role="form" action="" method="post" class="registration-form">
+          <!-- <form role="form" action="" method="post" class="registration-form"> -->
             <!-- <div class="showimg">
               <img id="img" src="images/tx_1.jpg" alt="">
             </div>
@@ -161,9 +162,8 @@
             <center>
               <input type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;" />
             </center>
-            <button id="choosePic" type="submit" class="btn">确认</button>
-          </form>
-
+            <button id="choosePic" class="btn">确认</button>
+          <!-- </form> -->
         </div>
 
       </div>
@@ -188,9 +188,9 @@
       }
     }).then(res => {
       if (res) {
-        // console.log('🐸res', res)
+        console.log('🐸bgres', res)
         num = Number(res)
-        // console.log('🐸num', num)
+        console.log('🐸bgnum', num)
         let html = ''
         for (let i = 0; i < num; i++) {
           html += `<img class="selectBG" src="../../image/background/background${i + 1}.jpg" data-key=${i + 1}>`
@@ -203,7 +203,8 @@
       let BgNum = event.target.dataset.key
       // console.log('key', num)
       let html = `<img id="resultPic" src="../../image/background/background${BgNum}.jpg">`
-      document.querySelector('#showPic').innerHTML = html
+      // document.querySelector('#showPic').innerHTML = html
+      Sea('#showPic').append(html)
       Sea.Ajax({
         url: '/upload.bg',
         data: {
@@ -212,6 +213,9 @@
       }).then(res => {
         if (res == "ok") {
           console.log('background上传成功')
+        }
+        if (res == "exist") {
+          alert("已选择背景素材，请先清空")
         }
       })
       // Sea('.contentA').append(html)
@@ -240,7 +244,6 @@
       let FigNum = event.target.dataset.key
       // console.log('key', FigNum)
       if (FigNum != undefined) {
-        console.log('我不是undefined', FigNum)
         let html = `<img id="showFigure" src="../../image/figure/figure${FigNum}.jpg">`
         // document.querySelector('#showPic').innerHTML = html
         Sea('#showPic').prepend(html)
@@ -252,6 +255,9 @@
         }).then(res => {
           if (res == "ok") {
             console.log('figure上传成功')
+          }
+          if (res == "exist") {
+            alert("已选择人像素材，请先清空")
           }
         })
       }
@@ -277,11 +283,9 @@
     })
     Sea('#selectBfList').on('click', '.selectBf', function (event) {
       // Sea('.selectBGList').on('click', function () {
+
       let BfNum = event.target.dataset.key
       console.log('BfNum', BfNum)
-      let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
-      // document.querySelector('#showPic').innerHTML = html
-      Sea('#showPic').prepend(html)
       Sea.Ajax({
         url: '/upload.bf',
         data: {
@@ -289,7 +293,51 @@
         }
       }).then(res => {
         if (res == "ok") {
-          // console.log('butterfly上传成功')
+                if (BfNum == 14) {
+            let html = `
+          <div id="introduce">
+            <div class="bfIntroduce">
+            蓝闪蝶<br>(Morpho menelaus)
+            蝴蝶科闪蝶中最大的一个物种，是一种热带蝴蝶。蓝色翅膀十分绚丽，长约15cm。成年雌碟的翅膀上表面呈蓝色，下表面与树叶十分相似，呈现斑驳的棕色、灰色、黑色。
+            </div>
+            <video id="resultVideo" controls>
+              <source src="../../packages/butterfly14.mp4" type="video/mp4">
+            </video>
+          </div>`
+            document.querySelector('#showPic').innerHTML = html
+          }
+          else {
+            let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
+            // document.querySelector('#showPic').innerHTML = html
+            Sea('#showPic').prepend(html)
+          }
+        }
+        if (res == "exist") {
+          alert("已选择蝴蝶素材，请先清空")
+        }
+      })
+
+
+    })
+    Sea('#selectFilter').on('click', '.filterPic', function (event) {
+      // Sea('.selectBGList').on('click', function () {
+      let FilterNum = event.target.dataset.key
+      console.log('FilterNum', FilterNum)
+      Sea('#selectFilter .filterPic').removeClass('active')
+      Sea(event.target).addClass('active')
+      Sea.Ajax({
+        url: '/filter',
+        data: {
+          selectNum: FilterNum
+        }
+      }).then(res => {
+        if (res == "none") {
+          alert("请先融合图片")
+        }
+        if (res == "ok") {
+          // console.log('🐸该显示新图了')
+          let html = `<img id="resultPic" src="../../image/resultPic/filterPic.jpg" >`
+          document.querySelector('#showPic').innerHTML = html
         }
       })
     })
@@ -328,7 +376,69 @@
       })
     })
   </script>
+  <script type="text/javascript">
+    Sea('#btn_add').on('click', function () {
+      console.log('🐸按下了add')
 
+      Sea.Ajax({
+        url: '/upload.temp',
+        data: {
+        }
+      }).then(res => {
+        if (res == "0") {
+          alert("请先选择蝴蝶")
+        }
+        if (res == "3") {
+          let html = `
+          <img id="showFigure" src="../../image/temp/figure.jpg">
+          <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
+          <img id="resultPic" src="../../image/temp/background.jpg">
+          `
+          document.querySelector('#showPic').innerHTML = html
+        }
+        else {
+          if (res == "bf") {
+            let html = `
+          <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
+          `
+            document.querySelector('#showPic').innerHTML = html
+          }
+          if (res == "bg") {
+            let html = `
+          <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
+          <img id="resultPic" src="../../image/temp/background.jpg">
+          `
+            document.querySelector('#showPic').innerHTML = html
+          }
+          if (res == "figure") {
+            let html = `
+          <img id="showFigure" src="../../image/temp/figure.jpg">
+          <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
+          `
+            document.querySelector('#showPic').innerHTML = html
+          }
+        }
+      })
+    })
+  </script>
+
+  <script type="text/javascript">
+    Sea('#choosePic').on('click', function () {
+      console.log('🐸按下了choosePic')
+      Sea('button.close').click()
+      Sea.Ajax({
+        url: '/upload.fig',
+        data: {
+          selectNum:"0"
+        }
+      }).then(res => {
+        if (res == "ok") {
+          let html = `<img id="showFigure" src="../../image/temp/figure.jpg">`
+          Sea('#showPic').prepend(html)
+        }
+      })
+    })
+  </script>
 
   <script type="text/javascript">
     Sea('.contentA,.contentB,.contentC').hide()
@@ -349,26 +459,6 @@
         // console.log('🐸contentC应该显示了')
         Sea('.contentC').show()
       }
-    })
-  </script>
-  <script>
-    Sea('#selectFilter').on('click', '.filterPic', function (event) {
-      // Sea('.selectBGList').on('click', function () {
-      let filterNum = event.target.dataset.key
-      console.log('BfNum', filterNum)
-      let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
-      // document.querySelector('#showPic').innerHTML = html
-      Sea('#showPic').prepend(html)
-      Sea.Ajax({
-        url: '/upload.bf',
-        data: {
-          selectNum: BfNum
-        }
-      }).then(res => {
-        if (res == "ok") {
-          // console.log('butterfly上传成功')
-        }
-      })
     })
   </script>
   <!-- Javascript -->

@@ -21,6 +21,7 @@ def cut_picture(src):
 
     with open(imgfile, 'rb') as fp:
         img_info = fp.read()
+        # print("img_info:", img_info)
 
     seg_res = client.bodySeg(img_info)
     labelmap = base64.b64decode(seg_res['labelmap'])

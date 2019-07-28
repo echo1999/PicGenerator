@@ -4,6 +4,7 @@ import numpy as np
 import shutil
 from PIL import Image, ImageFilter
 import cv2
+import urllib.request
 from static.Detect.get_number_file import (
     get_number_file
 )
@@ -75,14 +76,14 @@ def showFig():
     return number
 
 
-@app.route('/upload.fig', methods=['GET'])
-def uploadFig():
+@app.route('/upload.fig1', methods=['GET'])
+def uploadFig1():
     if os.path.exists('./static/image/temp/figure.jpg'):
         return "exist"
     selectNum = request.args['selectNum']
     print("figrue_upload is none 外", selectNum)
     if selectNum == "0":
-        print("figrue_upload is none",selectNum)
+        print("figrue_upload is none", selectNum)
         src = './static/image/figure2/figure_upload.jpg'
         dst = './static/image/temp/'
         filename = 'figure.jpg'
@@ -93,6 +94,31 @@ def uploadFig():
     filename = 'figure.jpg'
     upload_picture(src, dst, filename)
     return "ok"
+
+@app.route('/upload.fig2', methods=['GET'])
+def uploadFig2():
+    if os.path.exists('./static/image/temp/figure.jpg'):
+        return "exist"
+    picSrc = request.args['picSrc']
+    print("picSrc", picSrc)
+    # file_path = './static/image/temp/figure'
+# file_name = image_url
+    # file_suffix = os.path.splitext(picSrc)[1]
+    # print(file_suffix)
+    # filename = '{}{}'.format(file_path, file_suffix)
+    # print("filename", filename)
+    # urllib.request.urlretrieve(picSrc, filename=filename)
+    # print(11111)
+    rsp = urllib.request.urlopen(picSrc)
+    img = rsp.read()
+    with open('./static/image/temp/figure.jpg', 'wb') as f:
+        f.write(img)
+    while True:
+        print("等待")
+        if os.path.exists('./static/image/temp/figure.jpg'):
+            print("图片已经下载成功，返回图片！")
+            return "ok"
+        continue
 
 
 @app.route('/show.bf', methods=['GET'])

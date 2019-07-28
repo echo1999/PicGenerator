@@ -40,8 +40,35 @@
     }
   </style>
 </head>
+<script>
+  (function () {
+    window.alert = function (name) {
+      var iframe = document.createElement("IFRAME");
+      iframe.style.display = "none";
+      iframe.setAttribute("src", 'data:text/plain');
+      document.documentElement.appendChild(iframe);
+      window.frames[0].window.alert(name);
+      iframe.parentNode.removeChild(iframe);
+    }
+  })();
+
+</script>
 
 <body>
+  <center>
+    <div id="topBar">欢迎访问，基于人脸检测的场景融合图像处理软件
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      登录页&nbsp;|&nbsp;主页&nbsp;|&nbsp;加入收藏&nbsp;
+      |&nbsp;信息反馈&nbsp;|&nbsp;联系电话</div>
+  </center>
   <div id="container">
     <video id="background_video" loop muted></video>
     <div id="video_cover"></div>
@@ -159,11 +186,11 @@
           <div class="showimg">
             <img id="preview" />
           </div>
-          <center>
-            <input type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;" />
-          </center>
+          <input id="file-select" type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;" />
+          <!-- <input id="file-select" name="file" type="file" onchange="imgPreview(this)" style="margin:10px;" /> -->
+
           <button id="choosePic" class="btn">确认</button>
-          <!-- </form> -->
+          <!-- <button class="btn" id="file-upload choosePic">确认</button> -->
         </div>
 
       </div>
@@ -171,14 +198,32 @@
   </div>
   <script src="../bideo.js"></script>
   <script src="../main.js"></script>
-
+  <!-- 用户上传人像图 -->
+  <!-- <script>
+    // Sea('#btn_start').on('click', function ()
+    Sea('#choosePic').on('click', function () {
+      console.log('🐸按下了choosePic')
+      Sea('button.close').click()
+      Sea.Ajax({
+        url: 'https://api.bigc.cc/v3/uptoken',
+      }).then((res) => {
+        log("按下了file-upload")
+        log(res)
+        const file = Sea('#file-select').dom.files[0]
+        if (file) {
+          Sea.upload(file, res.uptoken, function (name, event) {
+            log(name, event)
+          })
+        }
+    })
+  </script> -->
   <script>
     if (window.location.host.indexOf('github.io') !== -1 && window.location.protocol !== "https:") {
       window.location.protocol = "https";
     }
   </script>
   <script src="./generator.js"></script>
-  <script src="../../packages/bigsea.js"></script>
+  <script src="https://me.bigc.cc/bigsea.js"></script>
   <script src="../../packages/jquery.min.js"></script>
   <!-- 显示、上传背景图 -->
   <script type="text/javascript">
@@ -201,10 +246,6 @@
     Sea('#selectBgList').on('click', '.selectBG', function (event) {
       // Sea('.selectBGList').on('click', function () {
       let BgNum = event.target.dataset.key
-      // console.log('key', num)
-      let html = `<img id="resultPic" src="../../image/background/background${BgNum}.jpg">`
-      // document.querySelector('#showPic').innerHTML = html
-      Sea('#showPic').append(html)
       Sea.Ajax({
         url: '/upload.bg',
         data: {
@@ -213,6 +254,9 @@
       }).then(res => {
         if (res == "ok") {
           console.log('background上传成功')
+          let html = `<img id="resultPic" src="../../image/background/background${BgNum}.jpg">`
+          // document.querySelector('#showPic').innerHTML = html
+          Sea('#showPic').append(html)
         }
         if (res == "exist") {
           alert("已选择背景素材，请先清空")
@@ -248,7 +292,7 @@
         // document.querySelector('#showPic').innerHTML = html
         Sea('#showPic').prepend(html)
         Sea.Ajax({
-          url: '/upload.fig',
+          url: '/upload.fig1',
           data: {
             selectNum: FigNum
           }
@@ -335,7 +379,8 @@
           // console.log('🐸该显示新图了')
           Sea('#selectFilter .filterPic').removeClass('active')
           Sea(event.target).addClass('active')
-          let html = `<img id="resultPic" src="../../image/resultPic/filterPic.jpg" >`
+          let src = "../../image/resultPic/filterPic.jpg?t="+Date.now()
+          let html = `<img id="resultPic" src=${src} >`
           document.querySelector('#showPic').innerHTML = html
         }
       })
@@ -420,25 +465,43 @@
       })
     })
   </script>
-
   <script type="text/javascript">
     Sea('#choosePic').on('click', function () {
       console.log('🐸按下了choosePic')
       Sea('button.close').click()
       Sea.Ajax({
-        url: '/upload.fig',
-        data: {
-          selectNum: "0"
-        }
-      }).then(res => {
-        if (res == "ok") {
-          let html = `<img id="showFigure" src="../../image/temp/figure.jpg">`
-          Sea('#showPic').prepend(html)
+        url: 'https://api.bigc.cc/v3/uptoken',
+      }).then((res) => {
+        log(res)
+        const file = Sea('#file-select').dom.files[0]
+        log(file)
+        if (file) {
+          Sea.upload(file, res.uptoken, function (name, event) {
+            // console.log("name",name)
+            if (event.key != undefined) {
+              let picSrc = "https://cdn.bigc.cc/" + event.key
+              Sea.Ajax({
+                url: '/upload.fig2',
+                data: {
+                  picSrc: picSrc,
+                }
+              }).then(res => {
+                if (res == "ok") {
+                  console.log("图片已经下载成功，返回图片！")
+                  // let picSrc = "./static/image/temp/figure.jpg"
+                  let html = `<img id="showFigure" src="../../image/temp/figure.jpg">`
+                  Sea('#showPic').prepend(html)
+                }
+                else {
+                  alert("已选择人像素材，请先清空")
+                }
+              })
+            }
+          })
         }
       })
     })
   </script>
-
   <script type="text/javascript">
     Sea('.contentA,.contentB,.contentC').hide()
     Sea('.contentA').show()
@@ -461,6 +524,8 @@
     })
   </script>
   <!-- Javascript -->
+
+  <script src="https://unpkg.com/qiniu-js@2.5.4/dist/qiniu.min.js"></script>
   <script src="./form-1/assets/js/jquery-1.11.1.min.js"></script>
   <script src="./form-1/assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="./form-1/assets/js/jquery.backstretch.min.js"></script>

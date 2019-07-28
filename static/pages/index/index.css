@@ -9,7 +9,18 @@ body {
 	height: 100%;
 	overflow: hidden;
 }
-
+#topBar {
+	z-index: 2;
+	width: 87%;
+	height: 35px;
+	/* background-color: red; */
+	background-color: rgba(255, 255, 255, 0.8);
+	position: relative;
+	border-radius: 5px;
+	line-height: 35px;
+	color: #444;
+	box-shadow: 0 0 3px #797979;
+}
 #container {
 	overflow: hidden;
 	position: absolute;
@@ -96,20 +107,20 @@ body {
 }
 
 #links a {
-    border: 3px solid rgba(255, 255, 255, 0.9);
-    border-radius: 60px;
-    font-size: 20px;
-    color: #ffffff;
-    letter-spacing: 1px;
-    text-decoration: none;
-    /* text-transform: uppercase; */
-    padding: 10px 25px;
-    display: inline-block;
-    /* margin-right: 15px; */
-    width: 180px;
-    cursor: pointer;
-    letter-spacing: 5px;
-    font-weight: bold;
+	border: 3px solid rgba(255, 255, 255, 0.9);
+	border-radius: 60px;
+	font-size: 20px;
+	color: #ffffff;
+	letter-spacing: 1px;
+	text-decoration: none;
+	/* text-transform: uppercase; */
+	padding: 10px 25px;
+	display: inline-block;
+	/* margin-right: 15px; */
+	width: 180px;
+	cursor: pointer;
+	letter-spacing: 5px;
+	font-weight: bold;
 }
 
 input {

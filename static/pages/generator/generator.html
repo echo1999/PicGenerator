@@ -288,9 +288,7 @@
       let FigNum = event.target.dataset.key
       // console.log('key', FigNum)
       if (FigNum != undefined) {
-        let html = `<img id="showFigure" src="../../image/figure/figure${FigNum}.jpg">`
         // document.querySelector('#showPic').innerHTML = html
-        Sea('#showPic').prepend(html)
         Sea.Ajax({
           url: '/upload.fig1',
           data: {
@@ -299,6 +297,9 @@
         }).then(res => {
           if (res == "ok") {
             console.log('figure上传成功')
+            let picSrc = "../../image/figure/figure" + FigNum + ".jpg?t=" + Date.now()
+            let html = `<img id="showFigure" src=${picSrc} >`
+            Sea('#showPic').prepend(html)
           }
           if (res == "exist") {
             alert("已选择人像素材，请先清空")
@@ -379,7 +380,7 @@
           // console.log('🐸该显示新图了')
           Sea('#selectFilter .filterPic').removeClass('active')
           Sea(event.target).addClass('active')
-          let src = "../../image/resultPic/filterPic.jpg?t="+Date.now()
+          let src = "../../image/resultPic/filterPic.jpg?t=" + Date.now()
           let html = `<img id="resultPic" src=${src} >`
           document.querySelector('#showPic').innerHTML = html
         }
@@ -395,11 +396,13 @@
         if (res == "hasBf") {
           console.log('图片融合成功')
           let html = ''
-          html += `<img id="resultPic" src="../../image/resultPic/mixPic2.jpg" >`
+          let src = "../../image/resultPic/mixPic2.jpg?t=" + Date.now()
+          html += `<img id="resultPic" src=${src} >`
           document.querySelector('#showPic').innerHTML = html
         } else {
           let html = ''
-          html += `<img id="resultPic" src="../../image/resultPic/mixPic1.jpg" >`
+          let src = "../../image/resultPic/mixPic1.jpg?t=" + Date.now()
+          html += `<img id="resultPic" src=${src} >`
           document.querySelector('#showPic').innerHTML = html
         }
       })
@@ -433,10 +436,13 @@
           alert("请先选择蝴蝶")
         }
         if (res == "3") {
+          let src1 = "../../image/temp/figure.jpg?t=" + Date.now()
+          let src2 = "../../image/white_butterfly/butterfly14.jpg?t=" + Date.now()
+          let src3 = "../../image/temp/background.jpg?t=" + Date.now()
           let html = `
-          <img id="showFigure" src="../../image/temp/figure.jpg">
-          <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
-          <img id="resultPic" src="../../image/temp/background.jpg">
+          <img id="showFigure" src=${src1}>
+          <img id="showBf" src=${src2}>
+          <img id="resultPic" src=${src3}>
           `
           document.querySelector('#showPic').innerHTML = html
         }
@@ -448,15 +454,17 @@
             document.querySelector('#showPic').innerHTML = html
           }
           if (res == "bg") {
+            let src = "../../image/temp/background.jpg?t=" + Date.now()
             let html = `
           <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
-          <img id="resultPic" src="../../image/temp/background.jpg">
+          <img id="resultPic" src=${src}>
           `
             document.querySelector('#showPic').innerHTML = html
           }
           if (res == "figure") {
+            let src = "../../image/temp/figure.jpg?t=" + Date.now()
             let html = `
-          <img id="showFigure" src="../../image/temp/figure.jpg">
+          <img id="showFigure" src=${src}>
           <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
           `
             document.querySelector('#showPic').innerHTML = html
@@ -488,8 +496,10 @@
               }).then(res => {
                 if (res == "ok") {
                   console.log("图片已经下载成功，返回图片！")
-                  // let picSrc = "./static/image/temp/figure.jpg"
-                  let html = `<img id="showFigure" src="../../image/temp/figure.jpg">`
+                  // let src = "../../image/resultPic/filterPic.jpg?t=" + Date.now()
+                  // let html = `<img id="resultPic" src=${src} >`
+                  let picSrc = "../../image/temp/figure.jpg?t=" + Date.now()
+                  let html = `<img id="showFigure" src=${picSrc}>`
                   Sea('#showPic').prepend(html)
                 }
                 else {

@@ -191,11 +191,11 @@ input::-webkit-input-placeholder {
 #main {
 	z-index: 2;
 	width: 87%;
-	height: 500px;
+	height: 550px;
 	background-color: rgba(255, 255, 255, 0.6);
 	position: relative;
-	margin-top: 70px;
-	margin-left: 90px;
+	margin-top: 45px;
+	margin-left: 86px;
 	border-radius: 10px;
 	/* border-bottom-left-radius: 10px; */
 	overflow: hidden;
@@ -257,6 +257,13 @@ input::-webkit-input-placeholder {
 	height: 26px;
 	width: 80%;
 }
+#compare-fill {
+	margin-top: 5px;
+	margin-left: 65px;
+	height: 26px;
+	width: 80%;
+	/* background-color: pink; */
+}
 #showFigure {
 	width: 182px;
 	height: 250px;
@@ -282,7 +289,7 @@ input::-webkit-input-placeholder {
 	text-align: center;
 	vertical-align: middle;
 	height: 26px;
-	width: 32%;
+	width: 24%;
 	border: 1px solid grey;
 	border-radius: 10px;
 	background: rgba(238, 238, 238, 0.9);
@@ -292,12 +299,12 @@ input::-webkit-input-placeholder {
 #btn_add {
 	display: inline-block;
 	text-align: center;
-	width: 32%;
+	width: 24%;
 }
 #btn_restart {
 	display: inline-block;
 	text-align: center;
-	width: 33%;
+	width: 24%;
 }
 #selectFilter {
 	z-index: 4;
@@ -367,6 +374,31 @@ input::-webkit-input-placeholder {
 	height: 37%;
 	/* background-color: rgba(238, 238, 238, 0.9); */
 	margin-top: 55px;
+	cursor: pointer;
+}
+.compareAdd {
+	width: 6%;
+	height: 80%;
+}
+.compareSub {
+	width: 6%;
+	height: 80%;
+}
+.selectAddBf {
+	position: relative;
+	width: 50%;
+	height: 50%;
+	/* background-color: rgba(238, 238, 238, 0.9); */
+	margin-top: 35px;
+	cursor: pointer;
+}
+.selectAddBg {
+	position: relative;
+	width: 35%;
+	height: 60%;
+	/* background-color: rgba(238, 238, 238, 0.9); */
+	margin-top: 25px;
+	margin-left: 65px;
 	cursor: pointer;
 }
 .selectFig {
@@ -494,7 +526,7 @@ ul {
 	border: 1px #ccc solid;
 	border-radius: 10px;
 	width: 520px;
-	height: 300px;
+	height: 368px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -507,4 +539,77 @@ ul {
 }
 #file-upload {
 	cursor: pointer;
+}
+
+　* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+}
+
+ul,
+li {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+a:link {
+	text-decoration: none;
+}
+
+img {
+	vertical-align: middle;
+}
+
+
+.btn-numbox li {
+	float: left;
+}
+
+.btn-numbox li .number,
+.kucun {
+	display: inline-block;
+	font-size: 14px;
+	/* color: #808080; */
+	vertical-align: sub;
+}
+
+.btn-numbox .count {
+	overflow: hidden;
+	/* margin: 0 16px 0 -20px; */
+}
+
+.btn-numbox .count .num-jian,
+.input-num,
+.num-jia {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	line-height: 28px;
+	text-align: center;
+	font-size: 18px;
+	color: #999;
+	background-color: rgba(255, 255, 255, 0.8);
+	border-radius: 5px;
+	cursor: pointer;
+	margin-left: 2px;
+	margin-right:2px;
+	/* border: 1px solid; */
+}
+
+.btn-numbox .count .input-num {
+	width: 58px;
+	height: 26px;
+	color: #333;
+	border-left: 0;
+	border-right: 0;
 }

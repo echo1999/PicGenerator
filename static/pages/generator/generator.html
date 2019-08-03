@@ -85,7 +85,38 @@
         <div id="btns">
           <div class="left_btn" id="btn_start">融合</div>
           <div class="left_btn" id="btn_add">添加</div>
+          <div class="left_btn" id="btn_save" onclick="downloadImg()">保存</div>
           <div class="left_btn" id="btn_restart">清空</div>
+        </div>
+        <div id="compare-fill">
+          <ul class="btn-numbox">
+            <li><span class="number">对比度</span></li>
+            <li>
+              <ul class="count">
+                <li><span id="num-jian-compare" class="num-jian">-</span></li>
+                <li><input type="text" class="input-num" id="input-num-compare" value="0" /></li>
+                <li><span id="num-jia-compare" class="num-jia">+</span></li>
+              </ul>
+            </li>
+            <li><span class="kucun">(最大值:3)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></li>
+          </ul>
+          <ul class="btn-numbox">
+            <li><span class="number">亮度</span></li>
+            <li>
+              <ul class="count">
+                <li><span id="num-jian-fill" class="num-jian">-</span></li>
+                <li><input type="text" class="input-num" id="input-num-fill" value="0" /></li>
+                <li><span id="num-jia-fill" class="num-jia">+</span></li>
+              </ul>
+            </li>
+            <li><span class="kucun">(最大值:255)&nbsp;&nbsp;</span></li>
+          </ul>
+          <!-- 对比度:
+          <img class="compareAdd" src="../../../image/加号.png" href="#">
+          <input type="text" maxlength=1 style="width:25px;">
+          <img class="compareSub" src="../../../image/减号.png" href="#">
+          饱和度： -->
+          <button id="btn_compare_fill">确定</button>
         </div>
 
         <div id="selectFilter">
@@ -109,6 +140,8 @@
             <li class="active tabA">图像素材</li>
             <li class="tabB">人像图</li>
             <li class="tabC">蝴蝶图</li>
+            <li class="tabD">贴纸</li>
+            <li class="tabE">文字框</li>
           </ul>
         </div>
         <div id="myContent">
@@ -116,20 +149,16 @@
             <div id="selectFigList">
               <div class="selectFig" style="background-color: rgba(241, 241, 241, 0.9);">
                 <img class="selectAdd launch-modal" src="../../../image/add.png" href="#"
-                  data-modal-id="modal-register">
+                  data-modal-id="modal-register-fig">
               </div>
-              <!-- <img class="selectFig" src="../../image/figure/figure1.jpg">
-              <img class="selectFig" src="../../image/figure/figure2.jpg">
-              <img class="selectFig" src="../../image/figure/figure3.jpg">
-              <img class="selectFig" src="../../image/figure/figure4.jpg">
-              <img class="selectFig" src="../../image/figure/figure5.jpg">
-              <img class="selectFig" src="../../image/figure/figure6.jpg">
-              <img class="selectFig" src="../../image/figure/figure7.jpg">
-              <img class="selectFig" src="../../image/figure/figure8.jpg"> -->
             </div>
           </div>
           <div class="contentA">
             <div id="selectBgList">
+              <div class="selectBG" style="background-color: rgba(241, 241, 241, 0.9);">
+                <img class="selectAddBg launch-modal" src="../../../image/add.png" href="#"
+                  data-modal-id="modal-register-bg">
+              </div>
               <!-- <img class="selectBG" src="../../image/background/background1.jpg">
               <img class="selectBG" src="../../image/background/background2.jpg">
               <img class="selectBG" src="../../image/background/background2.jpg">
@@ -142,6 +171,10 @@
           </div>
           <div class="contentC">
             <div id="selectBfList">
+              <div class="selectBf" style="background-color: rgba(241, 241, 241, 0.9);">
+                <img class="selectAddBf launch-modal" src="../../../image/add.png" href="#"
+                  data-modal-id="modal-register-bf">
+              </div>
               <!-- <img class="selectBf" src="../../image/white_butterfly/butterfly1.jpg">
               <img class="selectBf" src="../../image/white_butterfly/butterfly2.jpg">
               <img class="selectBf" src="../../image/white_butterfly/butterfly3.jpg">
@@ -163,14 +196,38 @@
     </div>
   </div>
   </div>
-  <!-- MODAL -->
-  <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register-label"
+  <!-- MODAL-Background -->
+  <div class="modal fade" id="modal-register-bg" tabindex="-1" role="dialog" aria-labelledby="modal-register-label"
     aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
 
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
+          <button type="button" class="closeBg close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h3 class="modal-title" id="modal-register-label">上传背景图片</h3>
+          <p>点击浏览选择本地背景图片上传，点击确认后即上传成功</p>
+        </div>
+        <div class="modal-body">
+          <div class="showimg">
+            <img id="preview-bg" />
+          </div>
+          <input id="file-select-bg" type="file" name="file" onchange="imgPreviewBg(this)" style="margin: 10px;" />
+          <button id="chooseBg" class="btn">确认</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- MODAL-Figure -->
+  <div class="modal fade" id="modal-register-fig" tabindex="-1" role="dialog" aria-labelledby="modal-register-label"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="closeFig close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
           </button>
           <h3 class="modal-title" id="modal-register-label">上传人像图片</h3>
@@ -178,19 +235,36 @@
         </div>
 
         <div class="modal-body">
-          <!-- <form role="form" action="" method="post" class="registration-form"> -->
-          <!-- <div class="showimg">
-              <img id="img" src="images/tx_1.jpg" alt="">
-            </div>
-            <button id="choosePic" type="submit" class="btn">上传图像...</button> -->
           <div class="showimg">
-            <img id="preview" />
+            <img id="preview-fig" />
           </div>
-          <input id="file-select" type="file" name="file" onchange="imgPreview(this)" style="margin: 10px;" />
-          <!-- <input id="file-select" name="file" type="file" onchange="imgPreview(this)" style="margin:10px;" /> -->
+          <input id="file-select-fig" type="file" name="file" onchange="imgPreviewFig(this)" style="margin: 10px;" />
+          <button id="chooseFig" class="btn">确认</button>
+        </div>
 
-          <button id="choosePic" class="btn">确认</button>
-          <!-- <button class="btn" id="file-upload choosePic">确认</button> -->
+      </div>
+    </div>
+  </div>
+  <!-- MODAL-Bf -->
+  <div class="modal fade" id="modal-register-bf" tabindex="-1" role="dialog" aria-labelledby="modal-register-label"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="closeBf close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h3 class="modal-title" id="modal-register-label">上传蝴蝶图片</h3>
+          <p>点击浏览选择本地蝴蝶图片上传，点击确认后即上传成功</p>
+        </div>
+
+        <div class="modal-body">
+          <div class="showimg">
+            <img id="preview-bf" />
+          </div>
+          <input id="file-select-bf" type="file" name="file" onchange="imgPreviewBf(this)" style="margin: 10px;" />
+          <button id="chooseBf" class="btn">确认</button>
         </div>
 
       </div>
@@ -198,25 +272,6 @@
   </div>
   <script src="../bideo.js"></script>
   <script src="../main.js"></script>
-  <!-- 用户上传人像图 -->
-  <!-- <script>
-    // Sea('#btn_start').on('click', function ()
-    Sea('#choosePic').on('click', function () {
-      console.log('🐸按下了choosePic')
-      Sea('button.close').click()
-      Sea.Ajax({
-        url: 'https://api.bigc.cc/v3/uptoken',
-      }).then((res) => {
-        log("按下了file-upload")
-        log(res)
-        const file = Sea('#file-select').dom.files[0]
-        if (file) {
-          Sea.upload(file, res.uptoken, function (name, event) {
-            log(name, event)
-          })
-        }
-    })
-  </script> -->
   <script>
     if (window.location.host.indexOf('github.io') !== -1 && window.location.protocol !== "https:") {
       window.location.protocol = "https";
@@ -233,35 +288,36 @@
       }
     }).then(res => {
       if (res) {
-        console.log('🐸bgres', res)
         num = Number(res)
-        console.log('🐸bgnum', num)
         let html = ''
         for (let i = 0; i < num; i++) {
           html += `<img class="selectBG" src="../../image/background/background${i + 1}.jpg" data-key=${i + 1}>`
         }
-        document.querySelector('#selectBgList').innerHTML = html
+        // document.querySelector('#selectBgList').innerHTML = html
+        Sea('#selectBgList').append(html)
       }
     })
     Sea('#selectBgList').on('click', '.selectBG', function (event) {
       // Sea('.selectBGList').on('click', function () {
       let BgNum = event.target.dataset.key
-      Sea.Ajax({
-        url: '/upload.bg',
-        data: {
-          selectNum: BgNum
-        }
-      }).then(res => {
-        if (res == "ok") {
-          console.log('background上传成功')
-          let html = `<img id="resultPic" src="../../image/background/background${BgNum}.jpg">`
-          // document.querySelector('#showPic').innerHTML = html
-          Sea('#showPic').append(html)
-        }
-        if (res == "exist") {
-          alert("已选择背景素材，请先清空")
-        }
-      })
+      if (BgNum != undefined) {
+        Sea.Ajax({
+          url: '/upload.bg',
+          data: {
+            selectNum: BgNum
+          }
+        }).then(res => {
+          if (res == "ok") {
+            console.log('background上传成功')
+            let html = `<img id="resultPic" src="../../image/background/background${BgNum}.jpg">`
+            // document.querySelector('#showPic').innerHTML = html
+            Sea('#showPic').append(html)
+          }
+          if (res == "exist") {
+            alert("已选择背景素材，请先清空")
+          }
+        })
+      }
       // Sea('.contentA').append(html)
     })
 
@@ -330,16 +386,17 @@
       // Sea('.selectBGList').on('click', function () {
 
       let BfNum = event.target.dataset.key
-      console.log('BfNum', BfNum)
-      Sea.Ajax({
-        url: '/upload.bf',
-        data: {
-          selectNum: BfNum
-        }
-      }).then(res => {
-        if (res == "ok") {
-          if (BfNum == 14) {
-            let html = `
+      if (BfNum != undefined) {
+        console.log('BfNum', BfNum)
+        Sea.Ajax({
+          url: '/upload.bf',
+          data: {
+            selectNum: BfNum
+          }
+        }).then(res => {
+          if (res == "ok") {
+            if (BfNum == 14) {
+              let html = `
           <div id="introduce">
             <div class="bfIntroduce">
             蓝闪蝶<br>(Morpho menelaus)
@@ -349,18 +406,19 @@
               <source src="../../packages/butterfly14.mp4" type="video/mp4">
             </video>
           </div>`
-            document.querySelector('#showPic').innerHTML = html
+              document.querySelector('#showPic').innerHTML = html
+            }
+            else {
+              let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
+              // document.querySelector('#showPic').innerHTML = html
+              Sea('#showPic').prepend(html)
+            }
           }
-          else {
-            let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
-            // document.querySelector('#showPic').innerHTML = html
-            Sea('#showPic').prepend(html)
+          if (res == "exist") {
+            alert("已选择蝴蝶素材，请先清空")
           }
-        }
-        if (res == "exist") {
-          alert("已选择蝴蝶素材，请先清空")
-        }
-      })
+        })
+      }
 
 
     })
@@ -422,6 +480,16 @@
         }
       })
     })
+    function downloadImg() {
+      console.log('🐸save进来了')
+      var img = document.getElementById('resultPic'); // 获取要下载的图片
+      var url = img.src;                            // 获取图片地址
+      var a = document.createElement('a');          // 创建一个a节点插入的document
+      var event = new MouseEvent('click')           // 模拟鼠标click点击事件
+      a.download = '融合图'                  // 设置a节点的download属性值
+      a.href = url;                                 // 将图片的src赋值给a节点的href
+      a.dispatchEvent(event)                        // 触发鼠标点击事件
+    }
   </script>
   <script type="text/javascript">
     Sea('#btn_add').on('click', function () {
@@ -473,16 +541,57 @@
       })
     })
   </script>
+
   <script type="text/javascript">
-    Sea('#choosePic').on('click', function () {
-      console.log('🐸按下了choosePic')
-      Sea('button.close').click()
+    Sea('#chooseBg').on('click', function () {
+      console.log('🐸按下了chooseBg')
+      Sea('button.closeBg').click()
       Sea.Ajax({
         url: 'https://api.bigc.cc/v3/uptoken',
       }).then((res) => {
-        log(res)
-        const file = Sea('#file-select').dom.files[0]
-        log(file)
+        console.log('res', res)
+        const file = Sea('#file-select-bg').dom.files[0]
+        console.log('file', file)
+        if (file) {
+          Sea.upload(file, res.uptoken, function (name, event) {
+            // console.log("name",name)
+            if (event.key != undefined) {
+              let picSrc = "https://cdn.bigc.cc/" + event.key
+              Sea.Ajax({
+                url: '/upload.bg2',
+                data: {
+                  picSrc: picSrc,
+                }
+              }).then(res => {
+                if (res == "ok") {
+                  console.log("图片已经下载成功，返回图片！")
+                  // let src = "../../image/resultPic/filterPic.jpg?t=" + Date.now()
+                  // let html = `<img id="resultPic" src=${src} >`
+                  let picSrc = "../../image/temp/background.jpg?t=" + Date.now()
+                  let html = `<img id="resultPic" src=${picSrc}>`
+                  Sea('#showPic').prepend(html)
+                }
+                else {
+                  alert("已选择背景素材，请先清空")
+                }
+              })
+            }
+          })
+        }
+      })
+    })
+  </script>
+
+  <script type="text/javascript">
+    Sea('#chooseFig').on('click', function () {
+      console.log('🐸按下了chooseFig')
+      Sea('button.closeFig').click()
+      Sea.Ajax({
+        url: 'https://api.bigc.cc/v3/uptoken',
+      }).then((res) => {
+        console.log('res', res)
+        const file = Sea('#file-select-fig').dom.files[0]
+        console.log('file', file)
         if (file) {
           Sea.upload(file, res.uptoken, function (name, event) {
             // console.log("name",name)
@@ -504,6 +613,46 @@
                 }
                 else {
                   alert("已选择人像素材，请先清空")
+                }
+              })
+            }
+          })
+        }
+      })
+    })
+  </script>
+
+  <script type="text/javascript">
+    Sea('#chooseBf').on('click', function () {
+      console.log('🐸按下了chooseBf')
+      Sea('button.closeBf').click()
+      Sea.Ajax({
+        url: 'https://api.bigc.cc/v3/uptoken',
+      }).then((res) => {
+        // log(res)
+        const file = Sea('#file-select-bf').dom.files[0]
+        // log(file)
+        if (file) {
+          Sea.upload(file, res.uptoken, function (name, event) {
+            // console.log("name",name)
+            if (event.key != undefined) {
+              let picSrc = "https://cdn.bigc.cc/" + event.key
+              Sea.Ajax({
+                url: '/upload.bf2',
+                data: {
+                  picSrc: picSrc,
+                }
+              }).then(res => {
+                if (res == "ok") {
+                  console.log("图片已经下载成功，返回图片！")
+                  // let src = "../../image/resultPic/filterPic.jpg?t=" + Date.now()
+                  // let html = `<img id="resultPic" src=${src} >`
+                  let picSrc = "../../image/temp/butterfly.jpg?t=" + Date.now()
+                  let html = `<img id="selectBf" src=${picSrc}>`
+                  Sea('#showPic').prepend(html)
+                }
+                else {
+                  alert("已选择蝴蝶素材，请先清空")
                 }
               })
             }
@@ -541,7 +690,8 @@
   <script src="./form-1/assets/js/jquery.backstretch.min.js"></script>
   <script src="./form-1/assets/js/scripts.js"></script>
   <script>
-    function imgPreview(fileDom) {
+    function imgPreviewBg(fileDom) {
+      log('fileDom', fileDom)
       //判断是否支持FileReader
       if (window.FileReader) {
         var reader = new FileReader();
@@ -551,6 +701,7 @@
 
       //获取文件
       var file = fileDom.files[0];
+      log('fileDom.files[0]:', file)
       var imageType = /^image\//;
       //是否是图片
       if (!imageType.test(file.type)) {
@@ -558,14 +709,184 @@
         return;
       }
       //读取完成
+      // reader.readAsDataURL(file)
       reader.onload = function (e) {
         //获取图片dom
-        var img = document.getElementById("preview");
+        var img = document.getElementById("preview-bg");
         //图片路径设置为读取的图片
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
+  </script>
+  <script>
+    function imgPreviewFig(fileDom) {
+      log('fileDom', fileDom)
+      //判断是否支持FileReader
+      if (window.FileReader) {
+        var reader = new FileReader();
+      } else {
+        alert("您的设备不支持图片预览功能，如需该功能请升级您的设备！");
+      }
+
+      //获取文件
+      var file = fileDom.files[0];
+      log('fileDom.files[0]:', file)
+      var imageType = /^image\//;
+      //是否是图片
+      if (!imageType.test(file.type)) {
+        alert("请选择图片！");
+        return;
+      }
+      //读取完成
+      // reader.readAsDataURL(file)
+      reader.onload = function (e) {
+        //获取图片dom
+        var img = document.getElementById("preview-fig");
+        // log('preview', preview)
+        //图片路径设置为读取的图片
+        img.src = e.target.result;
+        // preview.innerHTML = '<img src="' + this.preview + '" alt=""/>'
+        log('img.src', img.src)
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+  <script>
+    function imgPreviewBf(fileDom) {
+      log('fileDom', fileDom)
+      //判断是否支持FileReader
+      if (window.FileReader) {
+        var reader = new FileReader();
+      } else {
+        alert("您的设备不支持图片预览功能，如需该功能请升级您的设备！");
+      }
+
+      //获取文件
+      var file = fileDom.files[0];
+      log('fileDom.files[0]:', file)
+      var imageType = /^image\//;
+      //是否是图片
+      if (!imageType.test(file.type)) {
+        alert("请选择图片！");
+        return;
+      }
+      //读取完成
+      // reader.readAsDataURL(file)
+      reader.onload = function (e) {
+        //获取图片dom
+        var img = document.getElementById("preview-bf");
+        // log('preview', preview)
+        //图片路径设置为读取的图片
+        img.src = e.target.result;
+        // preview.innerHTML = '<img src="' + this.preview + '" alt=""/>'
+        log('img.src', img.src)
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+
+  <!-- 调节对比度 -->
+  <script>
+    var num_jia_compare = document.getElementById("num-jia-compare");
+    var num_jian_compare = document.getElementById("num-jian-compare");
+    var input_num_compare = document.getElementById("input-num-compare");
+
+    num_jia_compare.onclick = function () {
+      if (input_num_compare.value < 3) {
+        // input_num_compare.value = parseFloat(input_num_compare.value) + 0.1;
+        var a = Number(input_num_compare.value)
+        var b = Number(a + 0.1)
+        // log('input_num_compare.value:', typeof (a))
+        input_num_compare.value = b.toFixed(1);
+        // log('input_num_compare.value', input_num_compare.value)
+      } else {
+        input_num_compare.value = 3;
+      }
+    }
+
+    num_jian_compare.onclick = function () {
+
+      if (input_num_compare.value <= 0) {
+        input_num_compare.value = 0;
+      } else {
+        var a = Number(input_num_compare.value)
+        var b = Number(a - 0.1)
+        // log('input_num_compare.value:', typeof (a))
+        input_num_compare.value = b.toFixed(1);
+        // log('input_num_compare.value', input_num_compare.value)
+      }
+
+    }
+  </script>
+
+  <!-- 调节饱和度 -->
+  <script>
+    var num_jia_fill = document.getElementById("num-jia-fill");
+    var num_jian_fill = document.getElementById("num-jian-fill");
+    var input_num_fill = document.getElementById("input-num-fill");
+
+    num_jia_fill.onclick = function () {
+      if (input_num_fill.value < 255) {
+
+        input_num_fill.value = parseInt(input_num_fill.value) + 5;
+      } else {
+        input_num_fill.value = 255;
+      }
+    }
+
+    num_jian_fill.onclick = function () {
+
+      if (input_num_fill.value <= 0) {
+        input_num_fill.value = 0;
+      } else {
+        input_num_fill.value = parseInt(input_num_fill.value) - 5;
+      }
+
+    }
+
+		/* 如果在和后台做数据交互时，出现点击加减按钮的值无法传到后台的情况，可以用下面这种方式
+		$("body").on("click", ".num-jian", function(m) {
+			var obj = $(this).closest("ul").find(".input-num");
+			if(obj.val() <= 0) {
+			     obj.val(0);
+			} else {
+			     obj.val(parseInt(obj.val()) - 1);
+			}
+			obj.change();
+		 });
+
+		$("body").on("click", ".num-jia", function(m) {
+			var obj = $(this).closest("ul").find(".input-num");
+			obj.val(parseInt(obj.val()) + 1);
+			obj.change();
+		});*/
+  </script>
+
+  <script>
+  Sea('#btn_compare_fill').on('click', function () {
+    var input_num_compare = document.getElementById("input-num-compare")
+    let compareNum = input_num_compare.value
+    var input_num_fill = document.getElementById("input-num-fill")
+    let fillNum = input_num_fill.value
+
+   Sea.Ajax({
+      url: '/show.compareFill',
+      data: {
+        compareNum:compareNum,
+        fillNum:fillNum
+      }
+    }).then(res => {
+      if (res=="ok") {
+        let src = "../../image/resultPic/compareFill.jpg?t=" + Date.now()
+        let html = `<img id="resultPic" src=${src} >`
+        document.querySelector('#showPic').innerHTML = html
+      }
+      if(res == "0"){
+        alert("请先融合图片，再调整对比度/亮度")
+      }
+    })
+  })
   </script>
 </body>
 

@@ -5,6 +5,9 @@ import shutil
 from PIL import Image, ImageFilter
 import cv2
 import urllib.request
+from static.Detect.compare_fill import(
+    Contrast_and_Brightness
+)
 from static.Detect.get_number_file import (
     get_number_file
 )
@@ -95,20 +98,13 @@ def uploadFig1():
     upload_picture(src, dst, filename)
     return "ok"
 
+
 @app.route('/upload.fig2', methods=['GET'])
 def uploadFig2():
     if os.path.exists('./static/image/temp/figure.jpg'):
         return "exist"
     picSrc = request.args['picSrc']
     print("picSrc", picSrc)
-    # file_path = './static/image/temp/figure'
-# file_name = image_url
-    # file_suffix = os.path.splitext(picSrc)[1]
-    # print(file_suffix)
-    # filename = '{}{}'.format(file_path, file_suffix)
-    # print("filename", filename)
-    # urllib.request.urlretrieve(picSrc, filename=filename)
-    # print(11111)
     rsp = urllib.request.urlopen(picSrc)
     img = rsp.read()
     with open('./static/image/temp/figure.jpg', 'wb') as f:
@@ -116,6 +112,42 @@ def uploadFig2():
     while True:
         print("等待")
         if os.path.exists('./static/image/temp/figure.jpg'):
+            print("图片已经下载成功，返回图片！")
+            return "ok"
+        continue
+
+
+@app.route('/upload.bg2', methods=['GET'])
+def uploadBg2():
+    if os.path.exists('./static/image/temp/background.jpg'):
+        return "exist"
+    picSrc = request.args['picSrc']
+    print("picSrc", picSrc)
+    rsp = urllib.request.urlopen(picSrc)
+    img = rsp.read()
+    with open('./static/image/temp/background.jpg', 'wb') as f:
+        f.write(img)
+    while True:
+        print("等待")
+        if os.path.exists('./static/image/temp/background.jpg'):
+            print("图片已经下载成功，返回图片！")
+            return "ok"
+        continue
+
+
+@app.route('/upload.bf2', methods=['GET'])
+def uploadBf2():
+    if os.path.exists('./static/image/temp/butterfly.jpg'):
+        return "exist"
+    picSrc = request.args['picSrc']
+    print("picSrc", picSrc)
+    rsp = urllib.request.urlopen(picSrc)
+    img = rsp.read()
+    with open('./static/image/temp/butterfly.jpg', 'wb') as f:
+        f.write(img)
+    while True:
+        print("等待")
+        if os.path.exists('./static/image/temp/butterfly.jpg'):
             print("图片已经下载成功，返回图片！")
             return "ok"
         continue
@@ -272,6 +304,38 @@ def showResult():
         return "noBf"
     else:
         return "hasBf"
+
+
+@app.route('/show.compareFill', methods=['GET'])
+def compareFill():
+    if os.path.exists('./static/image/resultPic/compareFill.jpg'):
+        os.remove('./static/image/resultPic/compareFill.jpg')
+    alpha = float(request.args['compareNum'])
+    beta = float(request.args['fillNum'])
+    path = './static/image/resultPic/'
+    fileNum = get_number_file(path)
+    # print("fileNum:", fileNum)
+    if fileNum == 3:
+        src = './static/image/filterPic.jpg'
+        img = cv2.imread(src)
+        img = Contrast_and_Brightness(alpha, beta, img)
+        cv2.imwrite("./static/image/compareFill.jpg", img)
+    if fileNum == 2:
+        src = 'C:/Users/echo1999/Documents/Github/PicGenerator/static/image/resultPic/mixPic2.jpg'
+        img = cv2.imread(src)
+        print("img:", img)
+        print("22222222222222")
+        img = Contrast_and_Brightness(alpha, beta, img)
+        cv2.imwrite(
+            "C:/Users/echo1999/Documents/Github/PicGenerator/static/image/resultPic/compareFill.jpg", img)
+    if fileNum == 1:
+        src = './static/image/mixPic1.jpg'
+        img = cv2.imread(src)
+        img = Contrast_and_Brightness(alpha, beta, img)
+        cv2.imwrite("./static/image/compareFill.jpg", img)
+    if fileNum == 0:
+        return "0"
+    return "ok"
 
 
 # 运行服务器

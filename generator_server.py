@@ -161,6 +161,14 @@ def showBF():
     return number
 
 
+@app.route('/show.ct', methods=['GET'])
+def showCt():
+    path = './static/image/white_cartoon/'
+    number = str(get_number_file(path))
+    print("number:", number)
+    return number
+
+
 @app.route('/upload.bf', methods=['GET'])
 def uploadBf():
     if os.path.exists('./static/image/temp/butterfly.jpg'):
@@ -316,23 +324,23 @@ def compareFill():
     fileNum = get_number_file(path)
     # print("fileNum:", fileNum)
     if fileNum == 3:
-        src = './static/image/filterPic.jpg'
+        src = './static/image/resultPic/filterPic.jpg'
         img = cv2.imread(src)
         img = Contrast_and_Brightness(alpha, beta, img)
-        cv2.imwrite("./static/image/compareFill.jpg", img)
+        cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)
     if fileNum == 2:
-        src = 'C:/Users/echo1999/Documents/Github/PicGenerator/static/image/resultPic/mixPic2.jpg'
+        src = './static/image/resultPic/mixPic2.jpg'
         img = cv2.imread(src)
-        print("img:", img)
-        print("22222222222222")
+        # print("img:", img)
+        # print("22222222222222")
         img = Contrast_and_Brightness(alpha, beta, img)
         cv2.imwrite(
-            "C:/Users/echo1999/Documents/Github/PicGenerator/static/image/resultPic/compareFill.jpg", img)
+            "./static/image/resultPic/compareFill.jpg", img)
     if fileNum == 1:
-        src = './static/image/mixPic1.jpg'
+        src = './static/image/resultPic/mixPic1.jpg'
         img = cv2.imread(src)
         img = Contrast_and_Brightness(alpha, beta, img)
-        cv2.imwrite("./static/image/compareFill.jpg", img)
+        cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)
     if fileNum == 0:
         return "0"
     return "ok"

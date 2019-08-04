@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import os
 
 
 def Contrast_and_Brightness(alpha, beta, img):
@@ -17,3 +18,14 @@ def Contrast_and_Brightness(alpha, beta, img):
 # img=Contrast_and_Brightness(alpha,beta,img)
 # cv2.imwrite('./compare_fill_image/'+src.split('/')[-1], img)
 
+# alpha = 1.2
+# beta = 1.5
+
+# dir = os.getcwd()
+# print("dir",dir)
+# src = './static/image/resultPic/mixPic1.jpg'
+# print("src:",src)
+# img = cv2.imread(src)
+# print("img:",img)
+# img = Contrast_and_Brightness(alpha, beta, img)
+# cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)

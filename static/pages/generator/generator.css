@@ -267,6 +267,8 @@ input::-webkit-input-placeholder {
 	margin-left: 65px;
 	height: 26px;
 	width: 80%;
+	position: relative;
+	z-index: 999;
 }
 #compare-fill {
 	margin-top: 5px;
@@ -643,7 +645,8 @@ img {
 	border-right: 0;
 }
 
-#block1{
+#block1 {
+	z-index:0;
 	height: 300px;
 	left: -60px;
 	position: absolute;

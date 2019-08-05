@@ -5,6 +5,12 @@ import shutil
 from PIL import Image, ImageFilter
 import cv2
 import urllib.request
+from static.Detect.mix2_tiezhi import(
+    mix_picture_of_tiezhi
+)
+from static.Detect.mix2_butterfly import(
+    mix_picture_of_butterfly
+)
 from static.Detect.compare_fill import(
     Contrast_and_Brightness
 )
@@ -23,9 +29,6 @@ from flask import (
 )
 from static.Detect.mix2 import(
     mix_picture
-)
-from static.Detect.mix2_butterfly import(
-    mix_picture_of_butterfly
 )
 from static.Detect.cut import(
     cut_picture
@@ -152,6 +155,19 @@ def uploadBf2():
             return "ok"
         continue
 
+
+@app.route('/upload.ct', methods=['GET'])
+def uploadCt():
+    if os.path.exists('./static/image/temp/cartoon.jpg'):
+        return "exist"
+    selectNum = request.args['selectNum']
+    print("selectNum",selectNum)
+    # print("figrue_upload is none 外", selectNum)
+    src = './static/image/black_cartoon/'+selectNum+'.jpg'
+    dst = './static/image/temp/'
+    filename = 'cartoon.jpg'
+    upload_picture(src, dst, filename)
+    return "ok"
 
 @app.route('/show.bf', methods=['GET'])
 def showBF():
@@ -291,27 +307,50 @@ def showResult():
     path = './static/image/temp/'
     fileNum = get_number_file(path)
     # print("fileNum:", fileNum)
-    if fileNum == 2:
-        background = './static/image/temp/background.jpg'
-        figure = './static/image/temp/figure.jpg'
-        cut_picture(figure)
-        figure_res = './static/image/cut/figure_res.jpg'
-        mix_picture(background, figure_res)
+    if os.path.exists('./static/image/temp/cartoon.jpg'):
+        if fileNum == 3:
+            background = './static/image/temp/background.jpg'
+            figure = './static/image/temp/figure.jpg'
+            cut_picture(figure)
+            figure_res = './static/image/cut/figure_res.jpg'
+            mix_picture(background, figure_res)
+        else:
+            background = './static/image/temp/background.jpg'
+            figure = './static/image/temp/figure.jpg'
+            cut_picture(figure)
+            figure_res = './static/image/cut/figure_res.jpg'
+            mix_picture(background, figure_res)
+            background2 = './static/image/resultPic/mixPic1.jpg'
+            butterfly = './static/image/temp/butterfly.jpg'
+            mix_picture_of_butterfly(background2, butterfly)
+        path = './static/image/resultPic/'
+        fileNum = get_number_file(path)
+        if fileNum == 2:
+            return "noBf"
+        else:
+            return "hasBf"
     else:
-        background = './static/image/temp/background.jpg'
-        figure = './static/image/temp/figure.jpg'
-        cut_picture(figure)
-        figure_res = './static/image/cut/figure_res.jpg'
-        mix_picture(background, figure_res)
-        background2 = './static/image/resultPic/mixPic1.jpg'
-        butterfly = './static/image/temp/butterfly.jpg'
-        mix_picture_of_butterfly(background2, butterfly)
-    path = './static/image/resultPic/'
-    fileNum = get_number_file(path)
-    if fileNum == 1:
-        return "noBf"
-    else:
-        return "hasBf"
+        if fileNum == 2:
+            background = './static/image/temp/background.jpg'
+            figure = './static/image/temp/figure.jpg'
+            cut_picture(figure)
+            figure_res = './static/image/cut/figure_res.jpg'
+            mix_picture(background, figure_res)
+        else:
+            background = './static/image/temp/background.jpg'
+            figure = './static/image/temp/figure.jpg'
+            cut_picture(figure)
+            figure_res = './static/image/cut/figure_res.jpg'
+            mix_picture(background, figure_res)
+            background2 = './static/image/resultPic/mixPic1.jpg'
+            butterfly = './static/image/temp/butterfly.jpg'
+            mix_picture_of_butterfly(background2, butterfly)
+        path = './static/image/resultPic/'
+        fileNum = get_number_file(path)
+        if fileNum == 1:
+            return "noBf"
+        else:
+            return "hasBf"
 
 
 @app.route('/show.compareFill', methods=['GET'])
@@ -345,7 +384,28 @@ def compareFill():
         return "0"
     return "ok"
 
-
+@app.route('/generator.cartoon', methods=['GET'])
+def generatorCt():
+    if os.path.exists('./static/image/temp/cartoon.jpg'):
+        if os.path.exists('./static/image/resultPic/cartoon.jpg'):
+            os.remove('./static/image/resultPic/cartoon.jpg')
+        path = './static/image/resultPic/'
+        fileNum = get_number_file(path)
+        # print("fileNum:", fileNum)
+        if fileNum == 2:
+            background='./static/image/resultPic/mixPic2.jpg'
+            cartoon='./static/image/temp/cartoon.jpg'
+        if fileNum == 1:
+            background = './static/image/resultPic/mixPic1.jpg'
+            cartoon = './static/image/temp/cartoon.jpg'
+        x = int(request.args['x'])  # x坐标
+        y = int(request.args['y'])  # y坐标
+        size = int(request.args['size'])
+        size=size/100
+        mix_picture_of_tiezhi(x,y,size,background,cartoon)
+        return "ok"
+    else:
+        return "0"
 # 运行服务器
 if __name__ == '__main__':
         # debug 模式可以自动加载你对代码的变动, 所以不用重启程序

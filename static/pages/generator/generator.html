@@ -354,6 +354,7 @@
       }
     })
     Sea('#selectFigList').on('click', '.selectFig', function (event) {
+      console.log("selectFig进来了")
       // Sea('.selectBGList').on('click', function () {
       let FigNum = event.target.dataset.key
       // console.log('key', FigNum)
@@ -378,19 +379,35 @@
       }
     })
     Sea('#selectCtList').on('click', '.selectCt', function (event) {
+      console.log("selectCt进来了")
       var obj = document.getElementById("resultPic")
+      console.log("obj", obj)
       if (obj) {
         let CtNum = event.target.dataset.key
         if (CtNum != undefined) {
-          let picSrc = "../../image/white_cartoon/" + CtNum + ".jpg?t=" + Date.now()
-          let html = `
-        <div id='block1' class="dragAble">
-        <img src = ${picSrc} id = "showCt"
-        onmousewheel = "return bbimg(this)" ondblclick="realsize();"
-        style = "top:0px;left:0px;">
-        </div>`
-          console.log("html", html)
-          Sea('#showPic').prepend(html)
+          // console.log("ctnum", ctnum)
+          Sea.Ajax({
+            url: '/upload.ct',
+            data: {
+              selectNum: CtNum
+            }
+          }).then(res => {
+            if (res == "ok") {
+              console.log('cartoon上传成功')
+              let picSrc = "../../image/transparent_cartoon/" + CtNum + ".png?t=" + Date.now()
+              let html = `
+          <div id='block1' class="dragAble">
+          <img src = ${picSrc} id = "showCt"
+          onmousewheel = "return bbimg(this)" ondblclick="realsize();"
+          style = "top:0px;left:0px;">
+          </div>`
+              console.log("html", html)
+              Sea('#showPic').prepend(html)
+            }
+            if (res == "exist") {
+              alert("已选择贴纸素材，请先清空")
+            }
+          })
         }
       } else {
         alert("请在融合图片后选择贴纸")
@@ -471,7 +488,7 @@
                   }
                   if (res == "3") {
                     let src1 = "../../image/temp/figure.jpg?t=" + Date.now()
-                    let src2 = "../../image/white_butterfly/butterfly14.jpg?t=" + Date.now()
+                    let src2 = "../../image/transparent_butterfly/butterfly14.jpg?t=" + Date.now()
                     let src3 = "../../image/temp/background.jpg?t=" + Date.now()
                     let html = `
             <img id="showFigure" src=${src1}>
@@ -483,14 +500,14 @@
                   else {
                     if (res == "bf") {
                       let html = `
-            <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
+            <img id="showBf" src="../../image/transparent_butterfly/butterfly14.jpg">
             `
                       document.querySelector('#showPic').innerHTML = html
                     }
                     if (res == "bg") {
                       let src = "../../image/temp/background.jpg?t=" + Date.now()
                       let html = `
-            <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
+            <img id="showBf" src="../../image/transparent_butterfly/butterfly14.jpg">
             <img id="resultPic" src=${src}>
             `
                       document.querySelector('#showPic').innerHTML = html
@@ -499,7 +516,7 @@
                       let src = "../../image/temp/figure.jpg?t=" + Date.now()
                       let html = `
             <img id="showFigure" src=${src}>
-            <img id="showBf" src="../../image/white_butterfly/butterfly14.jpg">
+            <img id="showBf" src="../../image/transparent_butterfly/butterfly14.jpg">
             `
                       document.querySelector('#showPic').innerHTML = html
                     }
@@ -508,7 +525,7 @@
               })
             }
             else {
-              let html = `<img id="showBf" src="../../image/white_butterfly/butterfly${BfNum}.jpg">`
+              let html = `<img id="showBf" src="../../image/transparent_butterfly/butterfly${BfNum}.png">`
               // document.querySelector('#showPic').innerHTML = html
               Sea('#showPic').prepend(html)
             }
@@ -984,16 +1001,19 @@
       let ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, 182, 250);
 
-      //把canvas图像转为img图片 并保存
-      //   img.src = canvas.toDataURL("image/jpg");
-      //   down.setAttribute("href", img.src);
-      // 	    down.setAttribute("download", "拍照.jpg")
+      let imgSrc = canvas.toDataURL("image/jpg");
+      // console.log("img.src",img.src)
+      var a = document.createElement('a')
+      var event = new MouseEvent('click')
+      a.setAttribute("href", imgSrc);
+      a.setAttribute("download", "拍照.jpg")
 
+      a.dispatchEvent(event)
       mediaStreamTrack && mediaStreamTrack.stop();
     }
 
   </script>
-  <script src="http://apps.bdimg.com/libs/jquery/1.6.2/jquery.min.js"></script>
+  <!-- <script src="http://apps.bdimg.com/libs/jquery/1.6.2/jquery.min.js"></script> -->
 
   <script type="text/javascript">
     /*鼠标将图片在相应的div自由拖动*/
@@ -1100,11 +1120,15 @@
       let x = document.querySelector('#block1').offsetLeft + 178
       let y = document.querySelector('#block1').offsetTop
       let size = document.querySelector('#showCt').getAttribute("style")
-      // console.log("size", size)
+      console.log("size", size)
       size = size.split(":")[3]
-      // console.log("size", size)
+      console.log("size", size)
+      if(size == undefined){
+        size = 100
+      }else {
       size = size.split("%")[0]
-      console.log("size",size)
+      console.log("size", size)
+      }
       if (x < 0) {
         x = 0
       }
@@ -1117,8 +1141,26 @@
       if (y > 185) {
         y = 185
       }
-      console.log("x:", x)
-      console.log("y:", y)
+      // console.log("x:", x)
+      // console.log("y:", y)
+      Sea.Ajax({
+        url: '/generator.cartoon',
+        data: {
+          x: x,
+          y: y,
+          size: size
+        }
+      }).then(res => {
+        if (res == "ok") {
+          let src = "../../image/resultPic/cartoon.jpg?t=" + Date.now()
+          let html = `<img id="resultPic" src=${src} >`
+          document.querySelector('#showPic').innerHTML = html
+        }
+        if (res == "0") {
+          alert("请先选择贴纸图")
+        }
+      })
+
 
     })
   </script>

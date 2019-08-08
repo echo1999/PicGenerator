@@ -5,6 +5,24 @@ import shutil
 from PIL import Image, ImageFilter
 import cv2
 import urllib.request
+import keras
+import PIL.Image
+import keras_contrib
+import io
+import logging
+
+
+from static.Detect.layers import(
+    DeprocessStylizedImage
+)
+from static.Detect.utils import(
+    load_image
+)
+from static.Detect.trans_style import (
+    sty_it
+)
+logger = logging.getLogger('utils')
+
 from static.Detect.mix2_tiezhi import(
     mix_picture_of_tiezhi
 )
@@ -161,13 +179,28 @@ def uploadCt():
     if os.path.exists('./static/image/temp/cartoon.jpg'):
         return "exist"
     selectNum = request.args['selectNum']
-    print("selectNum",selectNum)
+    print("selectNum", selectNum)
     # print("figrue_upload is none 外", selectNum)
     src = './static/image/black_cartoon/'+selectNum+'.jpg'
     dst = './static/image/temp/'
     filename = 'cartoon.jpg'
     upload_picture(src, dst, filename)
     return "ok"
+
+
+@app.route('/upload.wd', methods=['GET'])
+def uploadWd():
+    if os.path.exists('./static/image/temp/words.jpg'):
+        return "exist"
+    selectNum = request.args['selectNum']
+    print("selectNum", selectNum)
+    # print("figrue_upload is none 外", selectNum)
+    src = './static/image/black_words/'+selectNum+'.jpg'
+    dst = './static/image/temp/'
+    filename = 'words.jpg'
+    upload_picture(src, dst, filename)
+    return "ok"
+
 
 @app.route('/show.bf', methods=['GET'])
 def showBF():
@@ -180,6 +213,14 @@ def showBF():
 @app.route('/show.ct', methods=['GET'])
 def showCt():
     path = './static/image/white_cartoon/'
+    number = str(get_number_file(path))
+    print("number:", number)
+    return number
+
+
+@app.route('/show.wd', methods=['GET'])
+def showWd():
+    path = './static/image/white_words/'
     number = str(get_number_file(path))
     print("number:", number)
     return number
@@ -220,15 +261,24 @@ def filter():
         os.remove('./static/image/resultPic/filterPic.jpg')
     selectNum = request.args['selectNum']
     # print("filter_selectNum", selectNum)
-    # 边缘提取滤镜
+    # 边缘提取filter
     if os.path.exists('./static/image/resultPic/mixPic1.jpg'):
         if os.path.exists('./static/image/resultPic/mixPic2.jpg'):
-            print("进来了")
-            img = Image.open("./static/image/resultPic/mixPic2.jpg")
-            img1 = cv2.imread("./static/image/resultPic/mixPic2.jpg")
-            blur4 = beauty_face2(img1)
-            img = img.convert("RGB")
+            if os.path.exists('./static/image/resultPic/compareFill.jpg'):
+                img3 = "./static/image/resultPic/compareFill.jpg"
+                img = Image.open("./static/image/resultPic/compareFill.jpg")
+                img1 = cv2.imread("./static/image/resultPic/compareFill.jpg")
+                blur4 = beauty_face2(img1)
+                img = img.convert("RGB")
+
+            else:
+                img3 = "./static/image/resultPic/mixPic2.jpg"
+                img = Image.open("./static/image/resultPic/mixPic2.jpg")
+                img1 = cv2.imread("./static/image/resultPic/mixPic2.jpg")
+                blur4 = beauty_face2(img1)
+                img = img.convert("RGB")
         else:
+            img3 = "./static/image/resultPic/mixPic1.jpg"
             img = Image.open("./static/image/resultPic/mixPic1.jpg")
             img1 = cv2.imread("./static/image/resultPic/mixPic1.jpg")
             blur4 = beauty_face2(img1)
@@ -257,10 +307,13 @@ def filter():
     if selectNum == "5":
         imgfilted_b = img.filter(ImageFilter.BLUR)
         imgfilted_b.save("./static/image/resultPic/filterPic.jpg")
-    # 平滑滤镜
+    # kela滤镜
     if selectNum == "6":
-        imgfilted_sm = img.filter(ImageFilter.SMOOTH)
-        imgfilted_sm.save("./static/image/resultPic/filterPic.jpg")
+        # img = './static/image/figure/figure1.jpg'
+        output_img = './static/image/resultPic/filterPic.jpg'
+        model_checkpoint1 = './static/Detect/style_model/kaleidoscope_512x512_10_00015.h5'
+        sty_it(img3, output_img, model_checkpoint1)
+        # imgfilted_sm.save("./static/image/resultPic/filterPic.jpg")
     # 平滑滤镜-加强版
     if selectNum == "7":
         imgfilted_sm_m = img.filter(ImageFilter.SMOOTH_MORE)
@@ -273,15 +326,21 @@ def filter():
     if selectNum == "9":
         blur4 = beauty_face2(img1)
         cv2.imwrite("./static/image/resultPic/filterPic.jpg", blur4)
-   # 细节
+   # notre滤镜
     if selectNum == "10":
-        imgfilted_d = img.filter(ImageFilter.DETAIL)
-        imgfilted_d.save("./static/image/resultPic/filterPic.jpg")
-    # 组合
+        output_img = './static/image/resultPic/filterPic.jpg'
+        model_checkpoint2 = './static/Detect/style_model/notre_dame_512_10_00015.h5'
+        sty_it(img3, output_img, model_checkpoint2)
+        # imgfilted_d = img.filter(ImageFilter.DETAIL)
+        # imgfilted_d.save("./static/image/resultPic/filterPic.jpg")
+    # head_of_clown滤镜
     if selectNum == "11":
-        group_imgfilted = img.filter(ImageFilter.CONTOUR)
-        group_imgfilted = group_imgfilted.filter(ImageFilter.SMOOTH_MORE)
-        group_imgfilted.save("./static/image/resultPic/filterPic.jpg")
+        output_img = './static/image/resultPic/filterPic.jpg'
+        model_checkpoint3 = './static/Detect/style_model/head_of_clown_512_10_00015.h5'
+        sty_it(img3, output_img, model_checkpoint3)
+        # group_imgfilted = img.filter(ImageFilter.CONTOUR)
+        # group_imgfilted = group_imgfilted.filter(ImageFilter.SMOOTH_MORE)
+        # group_imgfilted.save("./static/image/resultPic/filterPic.jpg")
     return "ok"
 
 
@@ -362,12 +421,13 @@ def compareFill():
     path = './static/image/resultPic/'
     fileNum = get_number_file(path)
     # print("fileNum:", fileNum)
-    if fileNum == 3:
+    if os.path.exists('./static/image/resultPic/filterPic.jpg'):
+        print("用滤镜的图来设置饱和度啦")
         src = './static/image/resultPic/filterPic.jpg'
         img = cv2.imread(src)
         img = Contrast_and_Brightness(alpha, beta, img)
         cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)
-    if fileNum == 2:
+    if os.path.exists('./static/image/resultPic/mixPic2.jpg'):
         src = './static/image/resultPic/mixPic2.jpg'
         img = cv2.imread(src)
         # print("img:", img)
@@ -375,7 +435,7 @@ def compareFill():
         img = Contrast_and_Brightness(alpha, beta, img)
         cv2.imwrite(
             "./static/image/resultPic/compareFill.jpg", img)
-    if fileNum == 1:
+    if os.path.exists('./static/image/resultPic/mixPic1.jpg'):
         src = './static/image/resultPic/mixPic1.jpg'
         img = cv2.imread(src)
         img = Contrast_and_Brightness(alpha, beta, img)
@@ -383,6 +443,7 @@ def compareFill():
     if fileNum == 0:
         return "0"
     return "ok"
+
 
 @app.route('/generator.cartoon', methods=['GET'])
 def generatorCt():
@@ -393,19 +454,45 @@ def generatorCt():
         fileNum = get_number_file(path)
         # print("fileNum:", fileNum)
         if fileNum == 2:
-            background='./static/image/resultPic/mixPic2.jpg'
-            cartoon='./static/image/temp/cartoon.jpg'
+            background = './static/image/resultPic/mixPic2.jpg'
+            cartoon = './static/image/temp/cartoon.jpg'
         if fileNum == 1:
             background = './static/image/resultPic/mixPic1.jpg'
             cartoon = './static/image/temp/cartoon.jpg'
-        x = int(request.args['x'])  # x坐标
-        y = int(request.args['y'])  # y坐标
+        x = int(round(float(request.args['x'])))  # x坐标
+        y = int(round(float(request.args['y'])))  # y坐标
         size = int(request.args['size'])
-        size=size/100
-        mix_picture_of_tiezhi(x,y,size,background,cartoon)
+        size = size/100
+        mix_picture_of_tiezhi(x, y, size, background, cartoon)
         return "ok"
     else:
         return "0"
+
+
+@app.route('/generator.words', methods=['GET'])
+def generatorWd():
+    if os.path.exists('./static/image/temp/words.jpg'):
+        if os.path.exists('./static/image/resultPic/cartoon.jpg'):
+            os.remove('./static/image/resultPic/cartoon.jpg')
+        path = './static/image/resultPic/'
+        fileNum = get_number_file(path)
+        # print("fileNum:", fileNum)
+        if fileNum == 2:
+            background = './static/image/resultPic/mixPic2.jpg'
+            cartoon = './static/image/temp/words.jpg'
+        if fileNum == 1:
+            background = './static/image/resultPic/mixPic1.jpg'
+            cartoon = './static/image/temp/words.jpg'
+        x = int(round(float(request.args['x'])))  # x坐标
+        y = int(round(float(request.args['y'])))  # y坐标
+        size = int(request.args['size'])
+        size = size/100
+        mix_picture_of_tiezhi(x, y, size, background, cartoon)
+        return "ok"
+    else:
+        return "0"
+
+
 # 运行服务器
 if __name__ == '__main__':
         # debug 模式可以自动加载你对代码的变动, 所以不用重启程序
@@ -414,7 +501,7 @@ if __name__ == '__main__':
         # SEND_FILE_MAX_AGE_DEFAULT=datetime.timedelta(seconds=1),
         debug=True,
         host='0.0.0.0',
-        port=2000,
+        port=2001,
     )
     app.run(**config)
     # app.run() 开始运行服务器

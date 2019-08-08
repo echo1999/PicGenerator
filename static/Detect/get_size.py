@@ -7,5 +7,5 @@ def get_size(src):
     print("picture_size: height为: {0},width为: {1}".format(height_1, width_1))
 
 
-src = './static/image/resultPic/taylor2_res.jpg'
+src = './static/image/background/taylor2_res.jpg'
 get_size(src)

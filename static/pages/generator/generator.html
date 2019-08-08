@@ -85,6 +85,7 @@
         <div id="btns">
           <div class="left_btn" id="btn_start">融合</div>
           <div class="left_btn" id="btn_cartoon">添加贴纸</div>
+          <div class="left_btn" id="btn_words">添加文字框</div>
           <div class="left_btn" id="btn_save" onclick="downloadImg()">保存</div>
           <div class="left_btn" id="btn_restart">清空</div>
         </div>
@@ -125,12 +126,12 @@
           <img class="filterPic" src="../../image/filter/浮雕.jpg" data-key="3">
           <img class="filterPic" src="../../image/filter/轮廓.jpg" data-key="4">
           <img class="filterPic" src="../../image/filter/模糊.jpg" data-key="5">
-          <img class="filterPic" src="../../image/filter/平滑.jpg" data-key="6">
+          <img class="filterPic" src="../../image/filter/平滑-kala.jpg" data-key="6">
           <img class="filterPic" src="../../image/filter/平滑滤镜_加强版.jpg" data-key="7">
           <img class="filterPic" src="../../image/filter/锐化.jpg" data-key="8">
           <img class="filterPic" src="../../image/filter/缇庣櫧.jpg" data-key="9">
-          <img class="filterPic" src="../../image/filter/细节.jpg" data-key="10">
-          <img class="filterPic" src="../../image/filter/组合.jpg" data-key="11">
+          <img class="filterPic" src="../../image/filter/细节-notre.jpg" data-key="10">
+          <img class="filterPic" src="../../image/filter/组合-head.jpg" data-key="11">
         </div>
       </div>
       <div id="right">
@@ -175,20 +176,6 @@
                 <img class="selectAddBf launch-modal" src="../../../image/add.png" href="#"
                   data-modal-id="modal-register-bf">
               </div>
-              <!-- <img class="selectBf" src="../../image/white_butterfly/butterfly1.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly2.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly3.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly4.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly5.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly6.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly7.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly8.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly9.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly10.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly11.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly12.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly13.jpg">
-              <img class="selectBf" src="../../image/white_butterfly/butterfly14.jpg"> -->
             </div>
           </div>
           <div class="contentD">
@@ -198,8 +185,11 @@
                 style="top:0px;left:0px;position:relative;" width="140px" height="191px"> -->
             </div>
           </div>
-          <div class="contentE"></div>
+          <div class="contentE">
+            <div id="selectWdList">
 
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -378,6 +368,7 @@
         })
       }
     })
+    //显示、上传贴纸图
     Sea('#selectCtList').on('click', '.selectCt', function (event) {
       console.log("selectCt进来了")
       var obj = document.getElementById("resultPic")
@@ -413,7 +404,42 @@
         alert("请在融合图片后选择贴纸")
       }
     })
-
+    // 显示、上传文字框图
+    Sea('#selectWdList').on('click', '.selectWd', function (event) {
+      console.log("selectWd进来了")
+      var obj = document.getElementById("resultPic")
+      console.log("obj", obj)
+      if (obj) {
+        let WdNum = event.target.dataset.key
+        if (WdNum != undefined) {
+          // console.log("ctnum", ctnum)
+          Sea.Ajax({
+            url: '/upload.wd',
+            data: {
+              selectNum: WdNum
+            }
+          }).then(res => {
+            if (res == "ok") {
+              console.log('words上传成功')
+              let picSrc = "../../image/transparent_words/" + WdNum + ".png?t=" + Date.now()
+              let html = `
+          <div id='block2' class="dragAble">
+          <img src = ${picSrc} id = "showWd"
+          onmousewheel = "return bbimg(this)" ondblclick="realsize();"
+          style = "top:0px;left:0px;">
+          </div>`
+              console.log("html", html)
+              Sea('#showPic').prepend(html)
+            }
+            if (res == "exist") {
+              alert("已选择文字框素材，请先清空")
+            }
+          })
+        }
+      } else {
+        alert("请在融合图片后选择文字框")
+      }
+    })
     //显示、上传蝴蝶图
     Sea.Ajax({
       url: '/show.bf',
@@ -447,6 +473,24 @@
           html += `<img class="selectCt" src="../../image/white_cartoon/${i + 1}.jpg" data-key=${i + 1}>`
         }
         Sea('#selectCtList').append(html)
+        // document.querySelector('#selectFigList').innerHTML = html
+      }
+    })
+    //显示、上传文字框图
+    Sea.Ajax({
+      url: '/show.wd',
+      data: {
+      }
+    }).then(res => {
+      if (res) {
+        // console.log('🐸res', res)
+        num = Number(res)
+        // console.log('🐸num', num)
+        let html = ''
+        for (let i = 0; i < res; i++) {
+          html += `<img class="selectWd" src="../../image/white_words/${i + 1}.jpg" data-key=${i + 1}>`
+        }
+        Sea('#selectWdList').append(html)
         // document.querySelector('#selectFigList').innerHTML = html
       }
     })
@@ -488,7 +532,7 @@
                   }
                   if (res == "3") {
                     let src1 = "../../image/temp/figure.jpg?t=" + Date.now()
-                    let src2 = "../../image/transparent_butterfly/butterfly14.jpg?t=" + Date.now()
+                    let src2 = "../../image/transparent_butterfly/butterfly14.png?t=" + Date.now()
                     let src3 = "../../image/temp/background.jpg?t=" + Date.now()
                     let html = `
             <img id="showFigure" src=${src1}>
@@ -1116,27 +1160,41 @@
 
   <script type="text/javascript">
     Sea('#btn_cartoon').on('click', function () {
+      console.log("点击了添加贴纸")
       // let x = document.querySelector('#block1').getAttribute("left");
-      let x = document.querySelector('#block1').offsetLeft + 178
-      let y = document.querySelector('#block1').offsetTop
+      if (document.querySelector('#block1').offsetLeft == null) {
+        alert("请先选择贴纸")
+      }
       let size = document.querySelector('#showCt').getAttribute("style")
       console.log("size", size)
       size = size.split(":")[3]
       console.log("size", size)
-      if(size == undefined){
+      if (size == undefined) {
         size = 100
-      }else {
-      size = size.split("%")[0]
-      console.log("size", size)
+      } else {
+        size = size.split("%")[0]
+        console.log("size", size)
       }
+      let x = document.querySelector('#block1').getAttribute("style")
+      if (x == null) {
+        x = -60
+      } else {
+        x = x.split(";")[1]
+        x = x.split(":")[1]
+        x = x.split("p")[0]
+      }
+      console.log("x:", x)
+      x = Number(x) + 280 + (144 - 144 * Number(size) / 100) / 2
+      let y = document.querySelector('#block1').offsetTop + 20
+      console.log("y:", y)
       if (x < 0) {
         x = 0
       }
       if (y < 0) {
         y = 0
       }
-      if (x > 390) {
-        x = 390
+      if (x > 419) {
+        x = 420
       }
       if (y > 185) {
         y = 185
@@ -1163,6 +1221,69 @@
 
 
     })
+  </script>
+
+  <script type="text/javascript">
+    Sea('#btn_words').on('click', function () {
+      console.log("按下了添加文字框")
+      let size = document.querySelector('#showWd').getAttribute("style")
+      // console.log("size", size)
+      size = size.split(":")[3]
+      // console.log("size", size)
+      if (size == undefined) {
+        size = 100
+        console.log("size", size)
+      } else {
+        size = size.split("%")[0]
+        console.log("size", size)
+      }
+
+      let x = document.querySelector('#block2').getAttribute("style")
+      if (x == null) {
+        x = -60
+      } else {
+        x = x.split(";")[1]
+        x = x.split(":")[1]
+        x = x.split("p")[0]
+      }
+        console.log("x:", x)
+        x = Number(x) + 280 + (144 - 144 * Number(size) / 100) / 2
+        let y = document.querySelector('#block2').offsetTop + 20
+        console.log("y:", y)
+        if (x < 0) {
+          x = 0
+        }
+        if (y < 0) {
+          y = 0
+        }
+        if (x > 390) {
+          x = 390
+        }
+        if (y > 185) {
+          y = 185
+        }
+        // console.log("x:", x)
+        // console.log("y:", y)
+        Sea.Ajax({
+          url: '/generator.words',
+          data: {
+            x: x,
+            y: y,
+            size: size
+          }
+        }).then(res => {
+          if (res == "ok") {
+            let src = "../../image/resultPic/cartoon.jpg?t=" + Date.now()
+            let html = `<img id="resultPic" src=${src} >`
+            document.querySelector('#showPic').innerHTML = html
+          }
+          if (res == "0") {
+            alert("请先选择贴纸图")
+          }
+        })
+
+
+      })
   </script>
 </body>
 

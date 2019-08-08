@@ -287,6 +287,11 @@ input::-webkit-input-placeholder {
 	height: 144px;
 	position: relative;
 }
+#showWd {
+	width: 144px;
+	height: 144px;
+	position: relative;
+}
 #showBf {
 	width: 144px;
 	height: 144px;
@@ -307,7 +312,7 @@ input::-webkit-input-placeholder {
 	text-align: center;
 	vertical-align: middle;
 	height: 26px;
-	width: 24%;
+	width: 19%;
 	border: 1px solid grey;
 	border-radius: 10px;
 	background: rgba(238, 238, 238, 0.9);
@@ -317,12 +322,12 @@ input::-webkit-input-placeholder {
 #btn_add {
 	display: inline-block;
 	text-align: center;
-	width: 24%;
+	width: 19%;
 }
 #btn_restart {
 	display: inline-block;
 	text-align: center;
-	width: 24%;
+	width: 19%;
 }
 #selectFilter {
 	z-index: 4;
@@ -449,6 +454,20 @@ input::-webkit-input-placeholder {
 }
 
 .selectCt {
+	z-index: 4;
+	width: 144px;
+	height: 144px;
+	/* background-color: green; */
+	/* position: relative; */
+	cursor: pointer;
+	float: left;
+	border: 1.5px solid rgba(0, 0, 0, 0);
+	/* margin: 0 auto; */
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+.selectWd {
 	z-index: 4;
 	width: 144px;
 	height: 144px;
@@ -646,6 +665,16 @@ img {
 }
 
 #block1 {
+	z-index:0;
+	height: 300px;
+	left: -60px;
+	position: absolute;
+	top: 0px;
+	width: 500px;
+	margin-left: 78px;
+	/* pointer-events:none; */
+}
+#block2 {
 	z-index:0;
 	height: 300px;
 	left: -60px;

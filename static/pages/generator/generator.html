@@ -1247,7 +1247,7 @@
         x = x.split("p")[0]
       }
         console.log("x:", x)
-        x = Number(x) + 280 + (144 - 144 * Number(size) / 100) / 2
+        x = Number(x) + 263 + (144 - 144 * Number(size) / 100) / 2
         let y = document.querySelector('#block2').offsetTop + 20
         console.log("y:", y)
         if (x < 0) {
@@ -1273,7 +1273,7 @@
           }
         }).then(res => {
           if (res == "ok") {
-            let src = "../../image/resultPic/cartoon.jpg?t=" + Date.now()
+            let src = "../../image/resultPic/words.jpg?t=" + Date.now()
             let html = `<img id="resultPic" src=${src} >`
             document.querySelector('#showPic').innerHTML = html
           }

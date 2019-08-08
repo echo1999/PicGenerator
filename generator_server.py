@@ -26,6 +26,9 @@ logger = logging.getLogger('utils')
 from static.Detect.mix2_tiezhi import(
     mix_picture_of_tiezhi
 )
+from static.Detect.mix2_words import(
+    mix_picture_of_words
+)
 from static.Detect.mix2_butterfly import(
     mix_picture_of_butterfly
 )
@@ -262,27 +265,36 @@ def filter():
     selectNum = request.args['selectNum']
     # print("filter_selectNum", selectNum)
     # 边缘提取filter
-    if os.path.exists('./static/image/resultPic/mixPic1.jpg'):
-        if os.path.exists('./static/image/resultPic/mixPic2.jpg'):
-            if os.path.exists('./static/image/resultPic/compareFill.jpg'):
-                img3 = "./static/image/resultPic/compareFill.jpg"
-                img = Image.open("./static/image/resultPic/compareFill.jpg")
-                img1 = cv2.imread("./static/image/resultPic/compareFill.jpg")
-                blur4 = beauty_face2(img1)
-                img = img.convert("RGB")
-
-            else:
-                img3 = "./static/image/resultPic/mixPic2.jpg"
-                img = Image.open("./static/image/resultPic/mixPic2.jpg")
-                img1 = cv2.imread("./static/image/resultPic/mixPic2.jpg")
-                blur4 = beauty_face2(img1)
-                img = img.convert("RGB")
-        else:
-            img3 = "./static/image/resultPic/mixPic1.jpg"
-            img = Image.open("./static/image/resultPic/mixPic1.jpg")
-            img1 = cv2.imread("./static/image/resultPic/mixPic1.jpg")
-            blur4 = beauty_face2(img1)
-            img = img.convert("RGB")
+    if os.path.exists('./static/image/resultPic/compareFill.jpg'):
+        img3 = "./static/image/resultPic/compareFill.jpg"
+        img = Image.open("./static/image/resultPic/compareFill.jpg")
+        img1 = cv2.imread("./static/image/resultPic/compareFill.jpg")
+        blur4 = beauty_face2(img1)
+        img = img.convert("RGB")
+    elif os.path.exists('./static/image/resultPic/cartoon.jpg'):
+        img3 = "./static/image/resultPic/cartoon.jpg"
+        img = Image.open("./static/image/resultPic/cartoon.jpg")
+        img1 = cv2.imread("./static/image/resultPic/cartoon.jpg")
+        blur4 = beauty_face2(img1)
+        img = img.convert("RGB")
+    elif os.path.exists('./static/image/resultPic/words.jpg'):
+        img3 = "./static/image/resultPic/words.jpg"
+        img = Image.open("./static/image/resultPic/words.jpg")
+        img1 = cv2.imread("./static/image/resultPic/words.jpg")
+        blur4 = beauty_face2(img1)
+        img = img.convert("RGB")
+    elif os.path.exists('./static/image/resultPic/mixPic2.jpg'):
+        img3 = "./static/image/resultPic/mixPic2.jpg"
+        img = Image.open("./static/image/resultPic/mixPic2.jpg")
+        img1 = cv2.imread("./static/image/resultPic/mixPic2.jpg")
+        blur4 = beauty_face2(img1)
+        img = img.convert("RGB")
+    elif os.path.exists('./static/image/resultPic/mixPic1.jpg'):
+        img3 = "./static/image/resultPic/mixPic1.jpg"
+        img = Image.open("./static/image/resultPic/mixPic1.jpg")
+        img1 = cv2.imread("./static/image/resultPic/mixPic1.jpg")
+        blur4 = beauty_face2(img1)
+        img = img.convert("RGB")
     else:
         return "none"
     print("selectNum_type", type(selectNum))
@@ -427,22 +439,34 @@ def compareFill():
         img = cv2.imread(src)
         img = Contrast_and_Brightness(alpha, beta, img)
         cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)
-    if os.path.exists('./static/image/resultPic/mixPic2.jpg'):
+        return "ok"
+    elif os.path.exists('./static/image/resultPic/cartoon.jpg'):
+        src = './static/image/resultPic/cartoon.jpg'
+        img = cv2.imread(src)
+        img = Contrast_and_Brightness(alpha, beta, img)
+        cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)
+        return "ok"
+    elif os.path.exists('./static/image/resultPic/words.jpg'):
+        src = './static/image/resultPic/words.jpg'
+        img = cv2.imread(src)
+        img = Contrast_and_Brightness(alpha, beta, img)
+        cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)
+        return "ok"
+    elif os.path.exists('./static/image/resultPic/mixPic2.jpg'):
         src = './static/image/resultPic/mixPic2.jpg'
         img = cv2.imread(src)
-        # print("img:", img)
-        # print("22222222222222")
         img = Contrast_and_Brightness(alpha, beta, img)
         cv2.imwrite(
             "./static/image/resultPic/compareFill.jpg", img)
-    if os.path.exists('./static/image/resultPic/mixPic1.jpg'):
+        return "ok"
+    elif os.path.exists('./static/image/resultPic/mixPic1.jpg'):
         src = './static/image/resultPic/mixPic1.jpg'
         img = cv2.imread(src)
         img = Contrast_and_Brightness(alpha, beta, img)
         cv2.imwrite("./static/image/resultPic/compareFill.jpg", img)
-    if fileNum == 0:
+        return "ok"
+    else:
         return "0"
-    return "ok"
 
 
 @app.route('/generator.cartoon', methods=['GET'])
@@ -453,6 +477,16 @@ def generatorCt():
         path = './static/image/resultPic/'
         fileNum = get_number_file(path)
         # print("fileNum:", fileNum)
+        if os.path.exists('./static/image/resultPic/words.jpg'):
+            background = './static/image/resultPic/words.jpg'
+            cartoon = './static/image/temp/cartoon.jpg'
+            x = int(round(float(request.args['x'])))  # x坐标
+            y = int(round(float(request.args['y'])))  # y坐标
+            size = int(request.args['size'])
+            size = size/100
+            mix_picture_of_tiezhi(x, y, size, background, cartoon)
+            os.remove('./static/image/resultPic/words.jpg')
+            return "ok"
         if fileNum == 2:
             background = './static/image/resultPic/mixPic2.jpg'
             cartoon = './static/image/temp/cartoon.jpg'
@@ -472,22 +506,32 @@ def generatorCt():
 @app.route('/generator.words', methods=['GET'])
 def generatorWd():
     if os.path.exists('./static/image/temp/words.jpg'):
-        if os.path.exists('./static/image/resultPic/cartoon.jpg'):
-            os.remove('./static/image/resultPic/cartoon.jpg')
+        if os.path.exists('./static/image/resultPic/words.jpg'):
+            os.remove('./static/image/resultPic/words.jpg')
         path = './static/image/resultPic/'
         fileNum = get_number_file(path)
         # print("fileNum:", fileNum)
-        if fileNum == 2:
+        if os.path.exists('./static/image/resultPic/cartoon.jpg'):
+            background = './static/image/resultPic/cartoon.jpg'
+            cartoon = './static/image/temp/words.jpg'
+            x = int(round(float(request.args['x'])))  # x坐标
+            y = int(round(float(request.args['y'])))  # y坐标
+            size = int(request.args['size'])
+            size = size/100
+            mix_picture_of_words(x, y, size, background, cartoon)
+            os.remove('./static/image/resultPic/cartoon.jpg')
+            return "ok"
+        elif fileNum == 2:
             background = './static/image/resultPic/mixPic2.jpg'
             cartoon = './static/image/temp/words.jpg'
-        if fileNum == 1:
+        else:
             background = './static/image/resultPic/mixPic1.jpg'
             cartoon = './static/image/temp/words.jpg'
         x = int(round(float(request.args['x'])))  # x坐标
         y = int(round(float(request.args['y'])))  # y坐标
         size = int(request.args['size'])
         size = size/100
-        mix_picture_of_tiezhi(x, y, size, background, cartoon)
+        mix_picture_of_words(x, y, size, background, cartoon)
         return "ok"
     else:
         return "0"
